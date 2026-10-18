@@ -1,7 +1,8 @@
 # Folio — notes for Claude Code
 
-Folio is a native notebook app for **Haiku** and **VitruvianOS** (V\OS: the
-Haiku API on a Linux kernel), modelled on OneNote, with Obsidian-style
+Folio is a native notebook app for **Haiku**, **VitruvianOS** (V\OS: the
+Haiku API on a Linux kernel) and plain **Linux** via Cosmoe (the Haiku API
+as a library on X11/Wayland), modelled on OneNote, with Obsidian-style
 `[[wiki links]]` that are rewritten when the page they point to is renamed or
 moved. It is written from scratch in C++17 against the Be/Haiku API. OneNote
 can't be ported because its source is closed.
@@ -17,6 +18,7 @@ sh tools/typecheck/haiku-check.sh      # type-check GUI code against real Haiku 
 make                                   # build ./Folio (on Haiku or VitruvianOS)
 make deb                               # .deb for VitruvianOS (see below)
 make hpkg                              # .hpkg, on Haiku R1/beta6+
+sh packaging/appimage/build-appimage.sh  # Linux AppImage (builds pinned Cosmoe; CI: .github/workflows/appimage.yml)
 python3 tools/mockups/build.py OUTDIR  # regenerate the two mockup PNGs (needs playwright)
 ```
 
@@ -42,7 +44,7 @@ with `vos-dev`.
 | `src/NoteView.*` | Editor, a stylable `BTextView`: live Markdown styling, Alt-click links, checkbox toggling, `[[` completion, file drops. |
 | `src/MainWindow.*`, `src/Widgets.*`, `src/App.cpp` | The rest of the UI: tree, title rename, side panel tabs, menus, settings. |
 | `tests/test_core.cpp` | 38 checks over the portable core (renames, folder moves, ambiguity, md links, search). |
-| `packaging/` | `build-deb.sh`, `debian/{postinst,changelog,copyright}`, `haiku/{build-hpkg.sh,PackageInfo.in}`. |
+| `packaging/` | `build-deb.sh`, `debian/{postinst,changelog,copyright}`, `haiku/{build-hpkg.sh,PackageInfo.in}`, `appimage/` (build script, AppRun, fonts.conf, desktop file, icon). |
 | `tools/vos-sdk/` | `make-sdk.sh` + `vos-0.6.2-linkonly.patch`. |
 | `tools/typecheck/` | `haiku-check.sh`. |
 | `tools/mockups/` | Mockup generator (HTML in Haiku style → PNG). |
@@ -65,9 +67,16 @@ The default notebooks folder is `~/Notebooks`. Settings are in
 * Code style follows Haiku: tabs, the return type on its own line,
   `fMember`, and `_PrivateMethod`.
 * Node-monitor messages differ by system. Haiku sends
-  `device`/`node`/`directory` ints, while V\OS sends a `virtual:node`
-  node_ref and `virtual:…directory` entry_refs. `Vault::HandleNodeMonitor`
-  handles both, with a path fallback. Don't simplify that away.
+  `device`/`node`/`directory` ints, V\OS sends a `virtual:node`
+  node_ref and `virtual:…directory` entry_refs, and Cosmoe sends
+  dev_t/ino_t-typed fields with the entry's **full path** as `name`.
+  `Vault::HandleNodeMonitor` handles all three, with a path fallback.
+  Don't simplify that away.
+* Cosmoe-specific code is under `#ifdef FOLIO_COSMOE` (set by the Makefile):
+  its `watch_node()` is unsupported, so `Vault::_Watch` uses `watch_path()`
+  and re-watches moved folders; files/URLs open via `xdg-open`; it can't draw
+  underline/strikeout faces. Its `entry_ref::name` may be a full path, so
+  take `md::Basename()` of it.
 * On V\OS, attributes are `user.beos.*` xattrs, and **dpkg drops xattrs**. The
   package ships them in `/usr/share/folio/apps_attrs.tar`, and `postinst`
   restores them with `getfattr`/`setfattr`, mirroring V\OS's own package.
@@ -80,7 +89,8 @@ The default notebooks folder is `~/Notebooks`. Settings are in
 
 ## Status
 
-v0.1.1 is published at github.com/idumych/folio with a .deb for
-VitruvianOS 0.6.x and an .hpkg for Haiku R1/beta6 (`make hpkg`, built on
-Haiku). Both were installed and tested in VirtualBox. See docs/HANDOFF.md
-§5 for what was verified and §7 for the next steps.
+v0.1.2 is published at github.com/idumych/folio with a .deb for
+VitruvianOS 0.6.x, an .hpkg for Haiku R1/beta6 (`make hpkg`, built on
+Haiku), and a Linux AppImage built with Cosmoe on Ubuntu 24.04 in CI.
+Haiku and V\OS were tested in VirtualBox, Linux under Xvfb + Openbox (X11).
+See docs/HANDOFF.md §5 for what was verified and §7 for the next steps.

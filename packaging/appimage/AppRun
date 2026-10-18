@@ -1,7 +1,12 @@
 #!/bin/sh
 # Folio AppImage entry point. Cosmoe finds its add-ons and data next to
-# usr/lib/libbe.so, and Folio finds libbe through its RUNPATH, so the only
-# thing to set up is fontconfig, for the bundled Noto fonts.
+# usr/lib/libbe.so, and Folio finds libbe through its RUNPATH; this sets up
+# the rest:
+#  - fontconfig, for the bundled Noto fonts;
+#  - TRANSLATORS, the image translators to load. Cosmoe's default lookup
+#    misses the bundled ones on the very first run from a mounted AppImage
+#    (no thumbnails until a restart), so name them directly.
 HERE=$(dirname "$(readlink -f "$0")")
 export FONTCONFIG_FILE="$HERE/etc/fonts/fonts.conf"
+export TRANSLATORS="$HERE/usr/lib/addons/Translators"
 exec "$HERE/usr/bin/Folio" "$@"

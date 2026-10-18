@@ -1,19 +1,23 @@
 # Folio
 
-A native notebook app for **Haiku** and **VitruvianOS**, in the spirit of
-OneNote, with Obsidian-style `[[wiki links]]` that rewrite themselves when you
+A native notebook app for **Haiku**, **VitruvianOS** and **Linux**, in the
+spirit of OneNote, with Obsidian-style `[[wiki links]]` that rewrite themselves when you
 rename or move the page they point to. It is written from scratch against the
 Be/Haiku API, since OneNote's own source is closed.
 
-One source tree builds on both systems, and each gets its own package:
+One source tree builds for all three, and each gets its own package:
 
 | System | Package | Tested on |
 |---|---|---|
 | **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.2-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
 | **VitruvianOS** 0.6.x, amd64 | `folio_0.1.2-1_amd64.deb` | 0.6.2 |
+| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.2-x86_64.AppImage` | CachyOS (X11) |
 
-Both packages are on the [Releases page](https://github.com/idumych/folio/releases).
-Each was installed and tested on its system, in VirtualBox. The tests
+All three are on the [Releases page](https://github.com/idumych/folio/releases).
+On Linux, Folio runs on [Cosmoe](https://github.com/haydentech/cosmoe), which
+provides the Haiku API as a library on X11 and Wayland, and the AppImage
+bundles it. The Haiku and VitruvianOS packages were installed and tested
+on those systems in VirtualBox; the AppImage was tested on X11. The tests
 covered:
 
 * installing the package, the Deskbar entry, and the `folio` command
@@ -25,7 +29,8 @@ covered:
 * attaching files through the file panel, plus drag and drop from Tracker
   (tested on VitruvianOS)
 * Move to Trash, which Tracker can restore from (restore tested on
-  VitruvianOS)
+  VitruvianOS); on Linux the page goes to the desktop Trash
+  (`~/.local/share/Trash`) with a `.trashinfo` record
 * the `FOLIO:tags` and `FOLIO:open_tasks` attributes; on Haiku they are
   indexed, and file-system queries find them
 
@@ -40,6 +45,10 @@ The unit tests (`make test`) also run in CI on every push.
 ![Folio on VitruvianOS: meeting notes, with a search listing every open to-do across notebooks](screenshots/vitruvianos-todos.png)
 
 *Folio on VitruvianOS 0.6.2.*
+
+![Folio on Linux: meeting notes with links to two projects, and the pages that link back to them](screenshots/linux-backlinks.png)
+
+*Folio on Linux (X11), from the AppImage.*
 
 ## Build and run
 
@@ -58,6 +67,21 @@ This installs Folio in `/boot/system/apps`, adds it to the Deskbar's
 Applications menu, and adds a `folio` command. To build from source
 instead, install `gcc`, `make` and `haiku_devel` with `pkgman`, then run
 `make && ./Folio`. `make hpkg` builds the package.
+
+**Linux** (x86_64): download `Folio-0.1.2-x86_64.AppImage` from the
+[Releases page](https://github.com/idumych/folio/releases), then:
+
+```sh
+chmod +x Folio-0.1.2-x86_64.AppImage
+./Folio-0.1.2-x86_64.AppImage
+```
+
+It needs nothing installed beyond a normal desktop. Cosmoe picks Wayland
+or X11 automatically; set `COSMOE_BACKEND=x11` (or `wayland`) to choose.
+To build it yourself, `sh packaging/appimage/build-appimage.sh` builds the
+pinned Cosmoe release and then the AppImage (see the script for the
+packages it needs). With Cosmoe installed, `make` builds `./Folio`
+directly (`COSMOE_ROOT` points at its prefix, default `/usr`).
 
 **VitruvianOS**: the quickest way is the package. Download
 `folio_0.1.2-1_amd64.deb` from the
@@ -120,6 +144,20 @@ it at any other folder, including an existing Obsidian vault.
 * **Shortcuts.** The README says "Alt" because that is the default
   command key on Haiku. On VitruvianOS's default keymap the command key
   is Ctrl, so Ctrl+R renames, Ctrl+N makes a new page, and so on.
+
+### Differences on Linux (Cosmoe)
+
+* **Shortcuts** use Ctrl, as on VitruvianOS.
+* **Show in File Manager** (Tracker on the other systems) and links to
+  attachments and web pages open with `xdg-open`, so they go to your
+  desktop's own apps.
+* **Settings** are in `~/.config/cosmoe/Folio_settings`; notebooks are in
+  `~/Notebooks` as everywhere else. Cosmoe itself creates a `~/cosmoe`
+  folder for its own settings.
+* **Looks:** Cosmoe doesn't draw underlined or struck-through text yet, so
+  links are shown in colour only and done to-dos in grey.
+* **Not yet tested:** the Wayland backend, and dragging files in from a
+  Linux file manager.
 
 ## How it is organised
 

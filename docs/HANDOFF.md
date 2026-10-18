@@ -126,6 +126,7 @@ github.com/VitruvianOS/Vitruvian.
 | `make-sdk.sh` from an empty dir → `make deb` | works, about 4 min; same dynamic symbols as the delivered .deb |
 | **Running on Haiku** | **works** (2026-10-18, R1/beta6 hrev59866 in VirtualBox): built with gcc 13.3 (no warnings, 38/38 tests), `make hpkg` → `pkgman install` with attrs intact, Deskbar entry, Welcome notebook, rename via Page ▸ Rename and via `mv` (Haiku node-monitor path) rewrite links, Alt-click creates a page, checkbox, Attach File via BFilePanel, Move to Trash into `/boot/trash` with `_trk/original_path`, `FOLIO:*` attrs indexed and found by `query`. Found and fixed: window larger than a 1024×768 screen; bad `finddir` constant in `make install`. |
 | **Running on VitruvianOS** | **works** (2026-10-18, live 0.6.2 image in VirtualBox): release .deb installs via apt, postinst restores all 5 attrs, Deskbar entry and `folio` command present, Welcome notebook created, styling and backlinks render, rename via Page ▸ Rename and via `mv` in Terminal both rewrite `[[…]]`, `[[…#heading]]` and `[[…\|alias]]` links; no stderr output. Command key is Ctrl. Mouse pass (driven through the VirtualBox API): tree context menu (New Section, Move To with links intact, Show in Tracker, Move to Trash with missing-link warning), Ctrl-click on a red link creates the page, checkbox click, Tags and Search tabs, Attach File via BFilePanel (thumbnail shown), drag-and-drop from Tracker (deduplicated to `sample 2.png`), `FOLIO:tags`/`FOLIO:open_tasks` xattrs, `.trashinfo` written and Tracker *Restore* works. All pass. |
+| **Running on Linux (Cosmoe)** | **works** (2026-10-18, Cosmoe v0.9.0_20261013, X11 backend under Xvfb + Openbox on CachyOS): Welcome notebook, Ctrl+R rename, `mv` of a page and of a section folder (then a page inside it) rewrite links, Ctrl-click creates a page, checkbox + `FOLIO:*` xattrs, Attach File via BFilePanel, Move to Trash → `~/.local/share/Trash` + `.trashinfo`, Show in File Manager → `xdg-open`. Found and fixed: Cosmoe's `watch_node()` is a stub (use `watch_path()`), node-monitor fields typed dev_t/ino_t with full-path names, `entry_ref::name` is a full path, underline/strikeout faces pick a Light style. Not tested: Wayland backend, XDND drops. Note: xdotool's zero-length clicks wedge Cosmoe's BTextView; real clicks are fine. |
 | lintian | not run (unavailable); expect complaints about non-FHS `/system`, which is normal for V\OS |
 
 ## 6. Known limits (v0.1)
@@ -141,7 +142,9 @@ github.com/VitruvianOS/Vitruvian.
 
 ## 7. Suggested next steps
 
-1. Both targets are exercised (see §5). Next: try Haiku nightlies and
+1. All three targets are exercised (see §5). For Linux, try the Wayland
+   backend and XDND file drops; report Cosmoe's missing underline/strikeout
+   and the `watch_node()` stub upstream. Next: try Haiku nightlies and
    V\OS 0.7 when it lands (the .deb pins `vos << 0.7~`).
 2. Use the result to fix whatever breaks. Keep logic changes in the portable
    core, with tests.
