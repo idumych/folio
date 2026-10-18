@@ -1,0 +1,7 @@
+/obj/
+/Folio
+*.deb
+/.vos-sdk/
+/.haiku-headers/
+tools/mockups/*.html
+/dist/

@@ -1,0 +1,9 @@
+folio (0.1.0-1) unstable; urgency=medium
+
+  * First package, for VitruvianOS 0.6.x (amd64).
+  * Notebooks, sections and pages as Markdown files, with [[wiki links]]
+    that are rewritten when a page, section or notebook is renamed or moved,
+    including renames made in Tracker or a terminal.
+  * Backlinks, #tags, to-dos, full-text search and attachments.
+
+ -- Folio maintainer <19998719+idumych@users.noreply.github.com>  Fri, 16 Oct 2026 08:26:24 -0700
