@@ -124,7 +124,7 @@ github.com/VitruvianOS/Vitruvian.
 | postinst attribute restore | 5 attrs restored, tested with getfattr/setfattr stand-ins in a scratch root (the real attr tools weren't available) |
 | dpkg install/remove (scratch root) | clean; refuses to install without `vos`, as it should |
 | `make-sdk.sh` from an empty dir → `make deb` | works, about 4 min; same dynamic symbols as the delivered .deb |
-| **Running on Haiku** | **not done** |
+| **Running on Haiku** | **works** (2026-10-18, R1/beta6 hrev59866 in VirtualBox): built with gcc 13.3 (no warnings, 38/38 tests), `make hpkg` → `pkgman install` with attrs intact, Deskbar entry, Welcome notebook, rename via Page ▸ Rename and via `mv` (Haiku node-monitor path) rewrite links, Alt-click creates a page, checkbox, Attach File via BFilePanel, Move to Trash into `/boot/trash` with `_trk/original_path`, `FOLIO:*` attrs indexed and found by `query`. Found and fixed: window larger than a 1024×768 screen; bad `finddir` constant in `make install`. |
 | **Running on VitruvianOS** | **works** (2026-10-18, live 0.6.2 image in VirtualBox): release .deb installs via apt, postinst restores all 5 attrs, Deskbar entry and `folio` command present, Welcome notebook created, styling and backlinks render, rename via Page ▸ Rename and via `mv` in Terminal both rewrite `[[…]]`, `[[…#heading]]` and `[[…\|alias]]` links; no stderr output. Command key is Ctrl. Mouse pass (driven through the VirtualBox API): tree context menu (New Section, Move To with links intact, Show in Tracker, Move to Trash with missing-link warning), Ctrl-click on a red link creates the page, checkbox click, Tags and Search tabs, Attach File via BFilePanel (thumbnail shown), drag-and-drop from Tracker (deduplicated to `sample 2.png`), `FOLIO:tags`/`FOLIO:open_tasks` xattrs, `.trashinfo` written and Tracker *Restore* works. All pass. |
 | lintian | not run (unavailable); expect complaints about non-FHS `/system`, which is normal for V\OS |
 
@@ -141,8 +141,8 @@ github.com/VitruvianOS/Vitruvian.
 
 ## 7. Suggested next steps
 
-1. **First real run on Haiku** (`make`). V\OS 0.6.2 is fully exercised
-   (see §5).
+1. Both targets are exercised (see §5). Next: try Haiku nightlies and
+   V\OS 0.7 when it lands (the .deb pins `vos << 0.7~`).
 2. Use the result to fix whatever breaks. Keep logic changes in the portable
    core, with tests.
 3. **Inline images** in the editor (BTextView can't do it; it needs a custom

@@ -16,6 +16,7 @@ make test                              # link-engine unit tests; any OS, no Haik
 sh tools/typecheck/haiku-check.sh      # type-check GUI code against real Haiku headers (Linux)
 make                                   # build ./Folio (on Haiku or VitruvianOS)
 make deb                               # .deb for VitruvianOS (see below)
+make hpkg                              # .hpkg, on Haiku R1/beta6+
 python3 tools/mockups/build.py OUTDIR  # regenerate the two mockup PNGs (needs playwright)
 ```
 
@@ -41,7 +42,7 @@ with `vos-dev`.
 | `src/NoteView.*` | Editor, a stylable `BTextView`: live Markdown styling, Alt-click links, checkbox toggling, `[[` completion, file drops. |
 | `src/MainWindow.*`, `src/Widgets.*`, `src/App.cpp` | The rest of the UI: tree, title rename, side panel tabs, menus, settings. |
 | `tests/test_core.cpp` | 38 checks over the portable core (renames, folder moves, ambiguity, md links, search). |
-| `packaging/` | `build-deb.sh`, `debian/{postinst,changelog,copyright}`. |
+| `packaging/` | `build-deb.sh`, `debian/{postinst,changelog,copyright}`, `haiku/{build-hpkg.sh,PackageInfo.in}`. |
 | `tools/vos-sdk/` | `make-sdk.sh` + `vos-0.6.2-linkonly.patch`. |
 | `tools/typecheck/` | `haiku-check.sh`. |
 | `tools/mockups/` | Mockup generator (HTML in Haiku style → PNG). |
@@ -79,8 +80,7 @@ The default notebooks folder is `~/Notebooks`. Settings are in
 
 ## Status
 
-v0.1.0 is published at github.com/idumych/folio (pre-release, with the
-.deb). It runs on VitruvianOS 0.6.2: the release .deb was installed and
-tested in VirtualBox, and renames in Folio and via `mv` both rewrite links.
-Nothing has run on real Haiku yet. See docs/HANDOFF.md §5 for what was
-verified and §7 for the next steps.
+v0.1.1 is published at github.com/idumych/folio with a .deb for
+VitruvianOS 0.6.x and an .hpkg for Haiku R1/beta6 (`make hpkg`, built on
+Haiku). Both were installed and tested in VirtualBox. See docs/HANDOFF.md
+§5 for what was verified and §7 for the next steps.
