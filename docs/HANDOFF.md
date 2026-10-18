@@ -68,7 +68,8 @@ github.com/VitruvianOS/Vitruvian.
   directory` entry_refs, plus `name`/`from name`, and int64
   `from directory`/`to directory` on moves. `Vault::HandleNodeMonitor` now
   handles this format and Haiku's.
-* **Trash** follows the XDG spec (`~/.local/share/Trash/files` + `info/`).
+* **Trash** follows the XDG spec (`files/` + `info/`); on V\OS 0.6.2 the
+  Trash dir is `~/config/data/Trash`, not `~/.local/share/Trash`.
   `Vault::Trash` writes a `.trashinfo` when the Trash dir is named `files`,
   and also `_trk/original_path`.
 * **Headers and dev files:** 0.6.2 ships headers in `/system/develop/headers`
@@ -124,7 +125,7 @@ github.com/VitruvianOS/Vitruvian.
 | dpkg install/remove (scratch root) | clean; refuses to install without `vos`, as it should |
 | `make-sdk.sh` from an empty dir → `make deb` | works, about 4 min; same dynamic symbols as the delivered .deb |
 | **Running on Haiku** | **not done** |
-| **Running on VitruvianOS** | **works** (2026-10-18, live 0.6.2 image in VirtualBox): release .deb installs via apt, postinst restores all 5 attrs, Deskbar entry and `folio` command present, Welcome notebook created, styling and backlinks render, rename via Page ▸ Rename and via `mv` in Terminal both rewrite `[[…]]`, `[[…#heading]]` and `[[…\|alias]]` links; no stderr output. Command key is Ctrl. Context menus, BFilePanel and attachments not yet exercised. |
+| **Running on VitruvianOS** | **works** (2026-10-18, live 0.6.2 image in VirtualBox): release .deb installs via apt, postinst restores all 5 attrs, Deskbar entry and `folio` command present, Welcome notebook created, styling and backlinks render, rename via Page ▸ Rename and via `mv` in Terminal both rewrite `[[…]]`, `[[…#heading]]` and `[[…\|alias]]` links; no stderr output. Command key is Ctrl. Mouse pass (driven through the VirtualBox API): tree context menu (New Section, Move To with links intact, Show in Tracker, Move to Trash with missing-link warning), Ctrl-click on a red link creates the page, checkbox click, Tags and Search tabs, Attach File via BFilePanel (thumbnail shown), drag-and-drop from Tracker (deduplicated to `sample 2.png`), `FOLIO:tags`/`FOLIO:open_tasks` xattrs, `.trashinfo` written and Tracker *Restore* works. All pass. |
 | lintian | not run (unavailable); expect complaints about non-FHS `/system`, which is normal for V\OS |
 
 ## 6. Known limits (v0.1)
@@ -140,9 +141,8 @@ github.com/VitruvianOS/Vitruvian.
 
 ## 7. Suggested next steps
 
-1. **First real run on Haiku** (`make`). V\OS 0.6.2 runs (see §5); still
-   untried there: `NotebookTree::MouseDown` context menus, BFilePanel and
-   attachment drops, which need a mouse.
+1. **First real run on Haiku** (`make`). V\OS 0.6.2 is fully exercised
+   (see §5).
 2. Use the result to fix whatever breaks. Keep logic changes in the portable
    core, with tests.
 3. **Inline images** in the editor (BTextView can't do it; it needs a custom

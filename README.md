@@ -69,10 +69,10 @@ it at any other folder, including an existing Obsidian vault.
   VitruvianOS doesn't have file indexing or live queries yet; its roadmap
   lists them next. Until then Tracker queries won't find these attributes,
   but Folio's own Search tab works the same as on Haiku.
-* **Trash.** VitruvianOS uses the Linux desktop Trash layout
-  (`~/.local/share/Trash/files` plus `info/`). *Move to Trash* writes the
-  matching `.trashinfo` record, so Tracker can restore the page, and so
-  can GNOME Files or Dolphin.
+* **Trash.** VitruvianOS uses the freedesktop.org Trash layout, kept in
+  `~/config/data/Trash` (`files/` plus `info/`). *Move to Trash* writes the
+  matching `.trashinfo` record, so Tracker's *Restore* puts the page back
+  where it was.
 * **Web links.** These open through the `application/x-vnd.Be.URL.*`
   handlers, so they need VitruvianOS's URL wrapper to be set up.
 * **Shortcuts.** The README says "Alt" because that is the default
