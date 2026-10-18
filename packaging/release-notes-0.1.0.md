@@ -1,6 +1,8 @@
 First public build of Folio, a native notebook app for VitruvianOS and Haiku in the spirit of OneNote, with Obsidian-style `[[wiki links]]` that are rewritten when the page they point to is renamed or moved.
 
-> **Pre-release:** Folio has not yet been run on real VitruvianOS or Haiku hardware. The GUI code is type-checked against the real Haiku and VitruvianOS headers, linked against VitruvianOS 0.6.2 libraries built from source, and the package has been test-installed with dpkg. Bug reports from a first run are very welcome.
+> **Tested on VitruvianOS 0.6.2** (amd64, in VirtualBox): installing this package, the Deskbar entry, first launch, page and link renames (in Folio and with `mv` in Terminal), moving pages, to-dos, tags, search, attachments via the file panel and by drag and drop from Tracker, and Move to Trash with restore from Tracker. Not yet run on Haiku; bug reports from there are very welcome.
+>
+> On VitruvianOS the command key is **Ctrl**: where the docs say Alt, use Ctrl (Ctrl+R renames, Ctrl-click follows a link).
 
 ## Install (VitruvianOS 0.6.x, amd64)
 
