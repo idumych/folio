@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Folio
+GenericName=Notebook
+Comment=Notebooks in Markdown with links that follow renames
+Exec=Folio %F
+Icon=folio
+Terminal=false
+Categories=Office;TextEditor;
+Keywords=notes;notebook;markdown;wiki;onenote;obsidian;
+MimeType=text/markdown;
+StartupWMClass=Folio

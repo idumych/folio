@@ -9,8 +9,8 @@ One source tree builds on both systems, and each gets its own package:
 
 | System | Package | Tested on |
 |---|---|---|
-| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.1-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
-| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.1-1_amd64.deb` | 0.6.2 |
+| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.2-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
+| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.2-1_amd64.deb` | 0.6.2 |
 
 Both packages are on the [Releases page](https://github.com/idumych/folio/releases).
 Each was installed and tested on its system, in VirtualBox. The tests
@@ -47,11 +47,11 @@ VitruvianOS (V\OS) runs Haiku applications recompiled from source on a
 Linux kernel. The Makefile detects which system it is on.
 
 **Haiku** (R1/beta6 or later, x86_64): download
-`folio-0.1.1-1-x86_64.hpkg` from the
+`folio-0.1.2-1-x86_64.hpkg` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-pkgman install ./folio-0.1.1-1-x86_64.hpkg
+pkgman install ./folio-0.1.2-1-x86_64.hpkg
 ```
 
 This installs Folio in `/boot/system/apps`, adds it to the Deskbar's
@@ -60,11 +60,11 @@ instead, install `gcc`, `make` and `haiku_devel` with `pkgman`, then run
 `make && ./Folio`. `make hpkg` builds the package.
 
 **VitruvianOS**: the quickest way is the package. Download
-`folio_0.1.1-1_amd64.deb` from the
+`folio_0.1.2-1_amd64.deb` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-sudo apt install ./folio_0.1.1-1_amd64.deb
+sudo apt install ./folio_0.1.2-1_amd64.deb
 ```
 
 This puts Folio in `/system/apps`, adds it to the Deskbar's Applications

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Folio app icon: a notebook with a section tab and a link. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="cover" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4f7fd6"/>
+      <stop offset="1" stop-color="#2f5bab"/>
+    </linearGradient>
+  </defs>
+  <!-- pages -->
+  <rect x="58" y="30" width="150" height="200" rx="12" fill="#f4f1e8" stroke="#8a8370" stroke-width="4"/>
+  <!-- section tabs -->
+  <rect x="196" y="56" width="30" height="36" rx="6" fill="#f2b33d" stroke="#9a6d12" stroke-width="3"/>
+  <rect x="196" y="100" width="30" height="36" rx="6" fill="#7cc36b" stroke="#3f7a32" stroke-width="3"/>
+  <!-- cover -->
+  <rect x="34" y="22" width="158" height="212" rx="14" fill="url(#cover)" stroke="#1f3f7a" stroke-width="4"/>
+  <!-- spine rings -->
+  <g fill="#dfe6f3" stroke="#1f3f7a" stroke-width="3">
+    <circle cx="54" cy="62" r="7"/>
+    <circle cx="54" cy="128" r="7"/>
+    <circle cx="54" cy="194" r="7"/>
+  </g>
+  <!-- link: two interlocking chain links -->
+  <g fill="none" stroke="#ffffff" stroke-width="11" transform="rotate(-45 113 128)">
+    <rect x="58" y="108" width="72" height="40" rx="20"/>
+    <rect x="96" y="108" width="72" height="40" rx="20"/>
+  </g>
+</svg>

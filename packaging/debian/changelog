@@ -1,3 +1,13 @@
+folio (0.1.2-1) unstable; urgency=medium
+
+  * New: Linux AppImage built with Cosmoe (any x86_64 desktop, X11 or
+    Wayland).
+  * Node monitoring also accepts Cosmoe's message layout; attachments keep
+    their file name when the platform's entry_ref carries a full path.
+  * The Attach File panel has its own title.
+
+ -- Folio maintainer <19998719+idumych@users.noreply.github.com>  Sun, 18 Oct 2026 14:56:16 -0700
+
 folio (0.1.1-1) unstable; urgency=medium
 
   * Keep the main window on screen when the display is smaller than the

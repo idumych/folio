@@ -19,6 +19,13 @@ class BBitmap;
 class BTextControl;
 
 
+// Open a file or folder in its preferred app, or a URL in the browser.
+// On Haiku and VitruvianOS this goes through the roster; on Cosmoe through
+// the Linux desktop's xdg-open.
+status_t				OpenEntry(const entry_ref& ref);
+status_t				OpenURL(const char* url);
+
+
 class TreeItem : public BStringItem {
 public:
 								TreeItem(const std::string& path, bool folder,

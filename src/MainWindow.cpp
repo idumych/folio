@@ -161,7 +161,7 @@ MainWindow::_BuildMenus()
 	file->AddItem(Item("New Notebook…", M_NEW_NOTEBOOK));
 	file->AddSeparatorItem();
 	file->AddItem(Item("Open Notebooks Folder…", M_OPEN_VAULT, 'O'));
-	file->AddItem(Item("Show in Tracker", M_SHOW_IN_TRACKER));
+	file->AddItem(Item(kShowInFolderLabel, M_SHOW_IN_TRACKER));
 	file->AddSeparatorItem();
 	BMenuItem* quit = Item("Quit", B_QUIT_REQUESTED, 'Q');
 	quit->SetTarget(be_app);
@@ -743,11 +743,7 @@ MainWindow::_FollowLink(int32 offset)
 	const md::Link& link = *found;
 
 	if (link.external) {
-		std::string url = link.target;
-		std::string scheme = url.substr(0, url.find(':'));
-		std::string mime = "application/x-vnd.Be.URL." + md::ToLower(scheme);
-		const char* args[] = {url.c_str(), NULL};
-		be_roster->Launch(mime.c_str(), 1, args);
+		OpenURL(link.target.c_str());
 		return;
 	}
 
@@ -759,7 +755,7 @@ MainWindow::_FollowLink(int32 offset)
 		} else {
 			entry_ref ref;
 			if (fVault.RefFor(target, &ref) == B_OK)
-				be_roster->Launch(&ref);
+				OpenEntry(ref);
 		}
 		return;
 	}
@@ -949,7 +945,7 @@ MainWindow::_ShowContextMenu(BMessage* message)
 
 		BMessage* show = new BMessage(M_SHOW_IN_TRACKER);
 		show->AddString("path", path.c_str());
-		menu->AddItem(new BMenuItem("Show in Tracker", show));
+		menu->AddItem(new BMenuItem(kShowInFolderLabel, show));
 		menu->AddSeparatorItem();
 		BMessage* trash = new BMessage(M_DELETE);
 		trash->AddString("path", path.c_str());
@@ -1178,7 +1174,7 @@ MainWindow::MessageReceived(BMessage* message)
 			std::string dir = fVault.IsFolder(path) ? path : md::Dirname(path);
 			entry_ref ref;
 			if (fVault.RefFor(dir, &ref) == B_OK)
-				be_roster->Launch(&ref);
+				OpenEntry(ref);
 			break;
 		}
 
@@ -1225,6 +1221,7 @@ MainWindow::MessageReceived(BMessage* message)
 				BMessenger target(this);
 				fAttachPanel = new BFilePanel(B_OPEN_PANEL, &target, NULL,
 					B_FILE_NODE, true, new BMessage(M_ATTACH_PANEL_REFS));
+				fAttachPanel->Window()->SetTitle("Folio: Attach file");
 			}
 			fAttachPanel->Show();
 			break;

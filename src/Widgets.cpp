@@ -1,12 +1,19 @@
 #include "Widgets.h"
 
 #include <algorithm>
+#include <cstring>
+
+#ifdef FOLIO_COSMOE
+#include <spawn.h>
+#include <sys/wait.h>
+#endif
 
 #include <Bitmap.h>
 #include <Button.h>
 #include <LayoutBuilder.h>
 #include <MimeType.h>
 #include <NodeInfo.h>
+#include <Path.h>
 #include <Roster.h>
 #include <StringView.h>
 #include <TextControl.h>
@@ -14,6 +21,52 @@
 
 #include "Constants.h"
 #include "MarkdownScan.h"
+
+
+#ifdef FOLIO_COSMOE
+extern char** environ;
+
+
+static status_t
+XdgOpen(const char* target)
+{
+	char* argv[] = {(char*)"xdg-open", (char*)target, NULL};
+	pid_t pid;
+	if (posix_spawnp(&pid, "xdg-open", NULL, NULL, argv, environ) != 0)
+		return B_ERROR;
+	// xdg-open hands off and exits quickly; don't leave a zombie behind.
+	waitpid(pid, NULL, 0);
+	return B_OK;
+}
+#endif
+
+
+status_t
+OpenEntry(const entry_ref& ref)
+{
+#ifdef FOLIO_COSMOE
+	BPath path(&ref);
+	if (path.InitCheck() != B_OK)
+		return path.InitCheck();
+	return XdgOpen(path.Path());
+#else
+	return be_roster->Launch(&ref);
+#endif
+}
+
+
+status_t
+OpenURL(const char* url)
+{
+#ifdef FOLIO_COSMOE
+	return XdgOpen(url);
+#else
+	std::string scheme(url, strcspn(url, ":"));
+	std::string mime = "application/x-vnd.Be.URL." + md::ToLower(scheme);
+	const char* args[] = {url, NULL};
+	return be_roster->Launch(mime.c_str(), 1, args);
+#endif
+}
 
 
 static const float kThumbHeight = 84;
@@ -213,7 +266,7 @@ AttachmentStrip::MouseDown(BPoint where)
 			continue;
 		entry_ref ref;
 		if (get_ref_for_path(e.path.c_str(), &ref) == B_OK)
-			be_roster->Launch(&ref);
+			OpenEntry(ref);
 		return;
 	}
 }

@@ -108,9 +108,17 @@ private:
 									VaultChange* change);
 			void				_EnsureIndices();
 			bool				_Ignored(const std::string& name) const;
+			void				_Watch(const std::string& rel,
+									const node_ref& nref);
+			void				_Unwatch(const std::string& rel,
+									const node_ref& nref);
 			bool				_RelIfInside(const std::string& absPath,
 									std::string* rel) const;
 			bool				_EventDir(BMessage* message,
+									const char* refField,
+									const char* inodeField, const char* name,
+									bool entryGone, std::string* rel) const;
+			bool				_EventEntry(BMessage* message,
 									const char* refField,
 									const char* inodeField, const char* name,
 									bool entryGone, std::string* rel) const;

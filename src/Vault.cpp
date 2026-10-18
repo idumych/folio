@@ -138,7 +138,35 @@ Vault::_AddEntry(const std::string& rel, const node_ref& nref, bool isDir)
 	if (isDir && !rel.empty())
 		fFolders.insert(rel);
 	if (isDir)
-		watch_node(&nref, B_WATCH_DIRECTORY, fWatcher);
+		_Watch(rel, nref);
+}
+
+
+// Haiku and VitruvianOS watch a folder by node, so a watch survives the
+// folder being renamed. Cosmoe only watches by path (its watch_node() is
+// unsupported), so moved folders are re-watched in _MoveBookkeeping().
+void
+Vault::_Watch(const std::string& rel, const node_ref& nref)
+{
+#ifdef FOLIO_COSMOE
+	(void)nref;
+	watch_path(AbsPath(rel).c_str(), B_WATCH_DIRECTORY, fWatcher);
+#else
+	watch_node(&nref, B_WATCH_DIRECTORY, fWatcher);
+#endif
+}
+
+
+void
+Vault::_Unwatch(const std::string& rel, const node_ref& nref)
+{
+#ifdef FOLIO_COSMOE
+	(void)nref;
+	watch_path(AbsPath(rel).c_str(), B_STOP_WATCHING, fWatcher);
+#else
+	(void)rel;
+	watch_node(&nref, B_STOP_WATCHING, fWatcher);
+#endif
 }
 
 
@@ -408,8 +436,13 @@ Vault::_MoveBookkeeping(const std::string& from, const std::string& to)
 		std::string newRel = to + e.first.substr(from.size());
 		fNodeOf[newRel] = e.second;
 		fNodes[e.second] = newRel;
-		if (fFolders.erase(e.first) > 0)
+		if (fFolders.erase(e.first) > 0) {
 			fFolders.insert(newRel);
+#ifdef FOLIO_COSMOE
+			_Unwatch(e.first, e.second);
+			_Watch(newRel, e.second);
+#endif
+		}
 		auto m = fModified.find(e.first);
 		if (m != fModified.end()) {
 			time_t t = m->second;
@@ -471,7 +504,7 @@ Vault::_RemoveSubtree(const std::string& rel, VaultChange* change)
 	for (auto it = fNodeOf.begin(); it != fNodeOf.end();) {
 		if (!rel.empty() && HasPrefixPath(it->first, rel)) {
 			if (fFolders.erase(it->first) > 0)
-				watch_node(&it->second, B_STOP_WATCHING, fWatcher);
+				_Unwatch(it->first, it->second);
 			else {
 				fGraph.Remove(it->first);
 				change->removed.push_back(it->first);
@@ -575,7 +608,8 @@ Vault::ImportAttachment(const entry_ref& ref, const std::string& forNote,
 	if (status != B_OK)
 		return status;
 
-	std::string name = ref.name;
+	// Cosmoe's entry_ref carries the full path as its name; keep the leaf.
+	std::string name = md::Basename(ref.name);
 	std::string stem = name, ext;
 	size_t dot = name.rfind('.');
 	if (dot != std::string::npos && dot > 0) {
@@ -611,19 +645,43 @@ Vault::ImportAttachment(const entry_ref& ref, const std::string& forNote,
 
 // Node monitor messages differ between systems: Haiku identifies the node
 // and folders by "device"/"node"/"directory" numbers, VitruvianOS sends a
-// "virtual:node" node_ref and "virtual:…directory" entry_refs. Both are
-// handled, with a path-based fallback for nodes that are already gone.
+// "virtual:node" node_ref and "virtual:…directory" entry_refs, and Cosmoe
+// sends the numbers as dev_t/ino_t fields and the entry's full path as its
+// "name". All are handled, with a path-based fallback for nodes that are
+// already gone.
+
+// Reads an integer field whatever its declared type: Haiku stores device
+// and inode numbers as int32/int64, Cosmoe as its own dev_t/ino_t types.
+static bool
+FindNumber(BMessage* message, const char* field, int64* value)
+{
+	type_code type;
+	if (message->GetInfo(field, &type) != B_OK)
+		return false;
+	const void* data;
+	ssize_t size;
+	if (message->FindData(field, type, &data, &size) != B_OK)
+		return false;
+	if (size == sizeof(int32))
+		*value = *(const int32*)data;
+	else if (size == sizeof(int64))
+		*value = *(const int64*)data;
+	else
+		return false;
+	return true;
+}
+
 
 static bool
 EventNode(BMessage* message, node_ref* node)
 {
 	if (message->FindNodeRef("virtual:node", node) == B_OK)
 		return true;
-	int32 device;
+	int64 device;
 	int64 inode;
-	if (message->FindInt32("device", &device) == B_OK
-		&& message->FindInt64("node", &inode) == B_OK) {
-		*node = node_ref(device, inode);
+	if (FindNumber(message, "device", &device)
+		&& FindNumber(message, "node", &inode)) {
+		*node = node_ref((dev_t)device, (ino_t)inode);
 		return true;
 	}
 	return false;
@@ -687,17 +745,41 @@ Vault::_EventDir(BMessage* message, const char* refField,
 		return _RelIfInside(folderItself ? p : md::Dirname(p), rel);
 	}
 
-	int32 device;
+	int64 device;
 	int64 inode;
-	if (message->FindInt32("device", &device) == B_OK
-		&& message->FindInt64(inodeField, &inode) == B_OK) {
-		auto it = fNodes.find(node_ref(device, inode));
+	if (FindNumber(message, "device", &device)
+		&& FindNumber(message, inodeField, &inode)) {
+		auto it = fNodes.find(node_ref((dev_t)device, (ino_t)inode));
 		if (it == fNodes.end())
 			return false;
 		*rel = it->second;
 		return true;
 	}
 	return false;
+}
+
+
+// The vault-relative path of the entry an event names.
+bool
+Vault::_EventEntry(BMessage* message, const char* refField,
+	const char* inodeField, const char* name, bool entryGone,
+	std::string* rel) const
+{
+	if (name == NULL)
+		return false;
+	// Cosmoe sends the entry's full path as its name.
+	if (name[0] == '/') {
+		std::string r;
+		if (!_RelIfInside(name, &r) || r.empty())
+			return false;
+		*rel = r;
+		return true;
+	}
+	std::string dirRel;
+	if (!_EventDir(message, refField, inodeField, name, entryGone, &dirRel))
+		return false;
+	*rel = md::JoinPath(dirRel, name);
+	return true;
 }
 
 
@@ -716,27 +798,24 @@ Vault::HandleNodeMonitor(BMessage* message, VaultChange* change)
 
 	if (opcode == B_ENTRY_CREATED || opcode == B_ENTRY_MOVED) {
 		bool created = opcode == B_ENTRY_CREATED;
-		std::string dirRel;
-		bool inside = name != NULL && _EventDir(message,
-			created ? "virtual:directory" : "virtual:to directory",
-			created ? "directory" : "to directory", name, false, &dirRel);
-		std::string newRel = inside ? md::JoinPath(dirRel, name)
-			: std::string();
-		bool ignoredName = name == NULL || _Ignored(name);
+		std::string newRel;
+		if (!_EventEntry(message,
+				created ? "virtual:directory" : "virtual:to directory",
+				created ? "directory" : "to directory", name, false, &newRel))
+			newRel.clear();
+		bool ignoredName = name == NULL || _Ignored(md::Basename(name));
 
 		std::string oldRel;
 		if (known != fNodes.end())
 			oldRel = known->second;
 		else if (!created) {
 			const char* fromName = NULL;
-			std::string fromDir;
+			std::string candidate;
 			if (message->FindString("from name", &fromName) == B_OK
-				&& _EventDir(message, "virtual:from directory",
-					"from directory", fromName, true, &fromDir)) {
-				std::string candidate = md::JoinPath(fromDir, fromName);
-				if (fNodeOf.count(candidate) > 0)
-					oldRel = candidate;
-			}
+				&& _EventEntry(message, "virtual:from directory",
+					"from directory", fromName, true, &candidate)
+				&& fNodeOf.count(candidate) > 0)
+				oldRel = candidate;
 		}
 
 		if (!oldRel.empty()) {
@@ -782,13 +861,10 @@ Vault::HandleNodeMonitor(BMessage* message, VaultChange* change)
 		if (known != fNodes.end())
 			oldRel = known->second;
 		else {
-			std::string dirRel;
-			if (name != NULL && _EventDir(message, "virtual:directory",
-					"directory", name, true, &dirRel)) {
-				std::string candidate = md::JoinPath(dirRel, name);
-				if (fNodeOf.count(candidate) > 0)
-					oldRel = candidate;
-			}
+			std::string candidate;
+			if (_EventEntry(message, "virtual:directory", "directory", name,
+					true, &candidate) && fNodeOf.count(candidate) > 0)
+				oldRel = candidate;
 		}
 		if (!oldRel.empty())
 			_RemoveSubtree(oldRel, change);

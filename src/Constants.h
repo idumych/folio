@@ -11,6 +11,14 @@
 #define kAttachmentFolder	"attachments"
 #define kSettingsFile		"Folio_settings"
 
+// On a plain Linux desktop (Cosmoe) folders open in the desktop's own
+// file manager rather than Tracker.
+#ifdef FOLIO_COSMOE
+#define kShowInFolderLabel	"Show in File Manager"
+#else
+#define kShowInFolderLabel	"Show in Tracker"
+#endif
+
 enum {
 	// File
 	M_NEW_NOTEBOOK			= 'nNbk',

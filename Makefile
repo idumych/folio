@@ -10,6 +10,7 @@ CXXFLAGS ?= -O2 -g
 override CXXFLAGS += -std=c++17 -Wall -Wno-multichar
 UNAME    := $(shell uname -s)
 VOS_HEADERS ?= /system/develop/headers
+COSMOE_ROOT ?= /usr
 VOS_ARCH := $(if $(filter aarch64,$(shell uname -m)),arm64,$(shell uname -m))
 
 ifeq ($(UNAME),Haiku)
@@ -50,6 +51,27 @@ else
     RESOURCES    = rc -o $(CURDIR)/obj/Folio.rsrc $(CURDIR)/Folio.rdef \
                    && xres -o $(CURDIR)/$@ $(CURDIR)/obj/Folio.rsrc \
                    && resattr -O -o $(CURDIR)/$@ $(CURDIR)/obj/Folio.rsrc
+  else ifneq ($(wildcard $(COSMOE_ROOT)/include/os/app/Application.h),)
+    # Plain Linux with Cosmoe (the Haiku API as a library on X11/Wayland).
+    # COSMOE_ROOT is its install prefix; build-appimage.sh points it at a
+    # staged copy that ships inside the AppImage.
+    PLATFORM    := Cosmoe
+    COSMOE_DIRS := config os os/app os/game os/interface os/kernel os/locale \
+                   os/media os/net os/storage os/support os/translation \
+                   os/be_apps/Tracker private/interface private/shared \
+                   private/support posix
+    override CXXFLAGS += -I$(COSMOE_ROOT)/include \
+                   $(addprefix -I$(COSMOE_ROOT)/include/,$(COSMOE_DIRS)) \
+                   -DFOLIO_COSMOE -fPIC
+    # libbe finds Cosmoe's add-ons and data next to itself, so the AppImage
+    # (bin/Folio + lib/) works wherever it is mounted.
+    COSMOE_RPATH ?= $$ORIGIN/../lib
+    LIBS        := -L$(COSMOE_ROOT)/lib -lbe -ltracker \
+                   -Wl,-rpath,'$(COSMOE_RPATH)'
+    INSTALL_DIR := $(HOME)/.local/bin
+    # Cosmoe reads resources from a .cosmoe_rsrc section linked into the app.
+    EXTRA_OBJS  := obj/Folio.rsrc.o
+    RESOURCES    = true
   else
     PLATFORM    := none
   endif
@@ -63,8 +85,9 @@ all: check-platform $(NAME)
 
 check-platform:
 ifeq ($(PLATFORM),none)
-	@echo "Folio needs Haiku or VitruvianOS. On VitruvianOS it uses"
-	@echo "'pkg-config vos' (vos-dev) or the headers in $(VOS_HEADERS)."
+	@echo "Folio needs Haiku, VitruvianOS, or Linux with Cosmoe. On"
+	@echo "VitruvianOS it uses 'pkg-config vos' (vos-dev) or the headers in"
+	@echo "$(VOS_HEADERS); on Linux, Cosmoe installed under COSMOE_ROOT=$(COSMOE_ROOT)."
 	@echo "(The link-engine tests run anywhere: make test)"
 	@false
 endif
@@ -73,8 +96,17 @@ obj/%.o: src/%.cpp src/*.h
 	@mkdir -p obj
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(NAME): $(OBJS) Folio.rdef
-	$(CXX) $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
+obj/Folio.rsrc.o: Folio.rdef
+	@mkdir -p obj
+	LD_LIBRARY_PATH=$(COSMOE_ROOT)/lib $(COSMOE_ROOT)/bin/rc \
+		-o obj/Folio.rsrc Folio.rdef
+	cd obj && ld -r -b binary Folio.rsrc -o Folio.rsrc.o
+	objcopy --rename-section .data=.cosmoe_rsrc \
+		--add-section .note.GNU-stack=/dev/null \
+		--set-section-flags .note.GNU-stack=noload,readonly obj/Folio.rsrc.o
+
+$(NAME): $(OBJS) $(EXTRA_OBJS) Folio.rdef
+	$(CXX) $(LDFLAGS) $(OBJS) $(EXTRA_OBJS) -o $@ $(LIBS)
 	$(RESOURCES)
 	@if command -v mimeset >/dev/null 2>&1; then mimeset -f $@; fi
 
@@ -95,7 +127,7 @@ test: tests/test_core.cpp src/LinkGraph.cpp src/MarkdownScan.cpp src/*.h
 install: all
 	mkdir -p "$(INSTALL_DIR)"
 	cp $(NAME) "$(INSTALL_DIR)/"
-	mimeset -f "$(INSTALL_DIR)/$(NAME)"
+	@if command -v mimeset >/dev/null 2>&1; then mimeset -f "$(INSTALL_DIR)/$(NAME)"; fi
 
 clean:
 	rm -rf obj $(NAME)

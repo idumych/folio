@@ -149,6 +149,12 @@ NoteView::Restyle(const LinkGraph* graph, const std::string& path)
 			face |= B_UNDERSCORE_FACE;
 		if ((a.flags & A_DONE) != 0 && (a.flags & A_LINK) == 0)
 			face |= B_STRIKEOUT_FACE;
+#ifdef FOLIO_COSMOE
+		// Cosmoe draws neither underline nor strikeout, and asking for them
+		// picks a lighter style of the font; links and done to-dos keep
+		// their colour instead.
+		face &= ~(B_UNDERSCORE_FACE | B_STRIKEOUT_FACE);
+#endif
 		font.SetFace(face != 0 ? face : B_REGULAR_FACE);
 		run.font = font;
 

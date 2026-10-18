@@ -6,3 +6,5 @@
 /.haiku-headers/
 tools/mockups/*.html
 /dist/
+/.cosmoe/
+*.AppImage
