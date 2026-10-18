@@ -1,21 +1,50 @@
 # Folio
 
-A native Haiku notebook app in the spirit of OneNote, with Obsidian-style
-`[[wiki links]]` that rewrite themselves when you rename or move the page they
-point to. It is written from scratch against the Be/Haiku API, since OneNote's
-own source is closed.
+A native notebook app for **Haiku** and **VitruvianOS**, in the spirit of
+OneNote, with Obsidian-style `[[wiki links]]` that rewrite themselves when you
+rename or move the page they point to. It is written from scratch against the
+Be/Haiku API, since OneNote's own source is closed.
+
+One source tree builds on both systems, and each gets its own package:
+
+| System | Package | Tested on |
+|---|---|---|
+| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.1-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
+| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.1-1_amd64.deb` | 0.6.2 |
+
+Both packages are on the [Releases page](https://github.com/idumych/folio/releases).
+Each was installed and tested on its system, in VirtualBox. The tests
+covered:
+
+* installing the package, the Deskbar entry, and the `folio` command
+* the Welcome notebook created on first launch
+* renaming a page in Folio, and with `mv` in a terminal while Folio runs:
+  every link is rewritten, keeping `#heading` and `|alias` as written
+* following a link to a missing page, which creates it
+* to-do checkboxes, tags, search, and backlinks
+* attaching files through the file panel, plus drag and drop from Tracker
+  (tested on VitruvianOS)
+* Move to Trash, which Tracker can restore from (restore tested on
+  VitruvianOS)
+* the `FOLIO:tags` and `FOLIO:open_tasks` attributes; on Haiku they are
+  indexed, and file-system queries find them
+
+The unit tests (`make test`) also run in CI on every push.
+
+![Folio on Haiku R1/beta6: a project page with wiki links, to-dos and tags, and the Tags tab listing every tag](screenshots/haiku-tags.png)
+
+*Folio on Haiku R1/beta6.*
 
 ![Folio on VitruvianOS: a project page with wiki links, to-dos and tags, and its backlinks in the side panel](screenshots/vitruvianos-links.png)
 
 ![Folio on VitruvianOS: meeting notes, with a search listing every open to-do across notebooks](screenshots/vitruvianos-todos.png)
 
-*Folio 0.1.0 running on VitruvianOS 0.6.2.*
+*Folio on VitruvianOS 0.6.2.*
 
 ## Build and run
 
-One source tree builds on both **Haiku** and **VitruvianOS** (V\OS), which
-runs Haiku applications recompiled from source on a Linux kernel. The
-Makefile detects which system it is on.
+VitruvianOS (V\OS) runs Haiku applications recompiled from source on a
+Linux kernel. The Makefile detects which system it is on.
 
 **Haiku** (R1/beta6 or later, x86_64): download
 `folio-0.1.1-1-x86_64.hpkg` from the
