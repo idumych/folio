@@ -136,6 +136,9 @@ fi
 FLEXLIB=$(ls "$DEPS/lib/libfl.a" /usr/lib/x86_64-linux-gnu/libfl.a 2>/dev/null | head -1 || true)
 FLEX_OPTS="-DFLEX_EXECUTABLE=$FLEX"
 [ -n "$FLEXLIB" ] && FLEX_OPTS="$FLEX_OPTS -DFL_LIBRARY=$FLEXLIB -DFLEX_INCLUDE_DIR=$DEPS/include"
+# vos maps only the x86_64-linux-gnu triple to an interpreter; Arch-style
+# hosts report x86_64-pc-linux-gnu, so name it explicitly.
+FLEX_OPTS="$FLEX_OPTS -DVOS_DYNAMIC_LINKER=/lib64/ld-linux-x86-64.so.2"
 
 # ---------------------------------------------------------------- buildtools
 say "VitruvianOS buildtools (rc, xres, resattr)"
