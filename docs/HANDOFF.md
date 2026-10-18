@@ -143,8 +143,11 @@ github.com/VitruvianOS/Vitruvian.
 ## 7. Suggested next steps
 
 1. All three targets are exercised (see §5). For Linux, try the Wayland
-   backend and XDND file drops; report Cosmoe's missing underline/strikeout
-   and the `watch_node()` stub upstream. Next: try Haiku nightlies and
+   backend and XDND file drops. Reported upstream (drop the workarounds
+   once fixed): haydentech/cosmoe#2 (`watch_node()` stub; message layout),
+   #3 (underline/strikeout faces), #4 (first-run translators in an
+   AppImage, which AppRun works around with `TRANSLATORS`; plus an
+   `AddPaths()` off-by-one inherited from Haiku). Next: try Haiku nightlies and
    V\OS 0.7 when it lands (the .deb pins `vos << 0.7~`).
 2. Use the result to fix whatever breaks. Keep logic changes in the portable
    core, with tests.
