@@ -76,8 +76,8 @@ it at any other folder, including an existing Obsidian vault.
 * **Web links.** These open through the `application/x-vnd.Be.URL.*`
   handlers, so they need VitruvianOS's URL wrapper to be set up.
 * **Shortcuts.** The README says "Alt" because that is the default
-  command key on Haiku. Use whatever key your VitruvianOS keymap assigns
-  as the command key.
+  command key on Haiku. On VitruvianOS's default keymap the command key
+  is Ctrl, so Ctrl+R renames, Ctrl+N makes a new page, and so on.
 
 ## How it is organised
 

@@ -79,8 +79,8 @@ The default notebooks folder is `~/Notebooks`. Settings are in
 
 ## Status
 
-Nothing has run on real Haiku or VitruvianOS yet. Everything the GUI code
-does is type-checked against real Haiku and V\OS headers, linked against
-V\OS 0.6.2 libraries built from source, and packaged and test-installed with
-dpkg. The first run on hardware is the open item. See docs/HANDOFF.md for
-the next steps.
+v0.1.0 is published at github.com/idumych/folio (pre-release, with the
+.deb). It runs on VitruvianOS 0.6.2: the release .deb was installed and
+tested in VirtualBox, and renames in Folio and via `mv` both rewrite links.
+Nothing has run on real Haiku yet. See docs/HANDOFF.md §5 for what was
+verified and §7 for the next steps.

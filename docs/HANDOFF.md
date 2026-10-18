@@ -124,7 +124,7 @@ github.com/VitruvianOS/Vitruvian.
 | dpkg install/remove (scratch root) | clean; refuses to install without `vos`, as it should |
 | `make-sdk.sh` from an empty dir → `make deb` | works, about 4 min; same dynamic symbols as the delivered .deb |
 | **Running on Haiku** | **not done** |
-| **Running on VitruvianOS** | **not done** |
+| **Running on VitruvianOS** | **works** (2026-10-18, live 0.6.2 image in VirtualBox): release .deb installs via apt, postinst restores all 5 attrs, Deskbar entry and `folio` command present, Welcome notebook created, styling and backlinks render, rename via Page ▸ Rename and via `mv` in Terminal both rewrite `[[…]]`, `[[…#heading]]` and `[[…\|alias]]` links; no stderr output. Command key is Ctrl. Context menus, BFilePanel and attachments not yet exercised. |
 | lintian | not run (unavailable); expect complaints about non-FHS `/system`, which is normal for V\OS |
 
 ## 6. Known limits (v0.1)
@@ -140,9 +140,9 @@ github.com/VitruvianOS/Vitruvian.
 
 ## 7. Suggested next steps
 
-1. **First real run** on V\OS 0.6.2 (install the .deb) or Haiku (`make`). The
-   likely trouble spots are `NoteView::Restyle` run arrays,
-   `NotebookTree::MouseDown` context menus, and BFilePanel on V\OS.
+1. **First real run on Haiku** (`make`). V\OS 0.6.2 runs (see §5); still
+   untried there: `NotebookTree::MouseDown` context menus, BFilePanel and
+   attachment drops, which need a mouse.
 2. Use the result to fix whatever breaks. Keep logic changes in the portable
    core, with tests.
 3. **Inline images** in the editor (BTextView can't do it; it needs a custom
