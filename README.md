@@ -5,6 +5,12 @@ A native Haiku notebook app in the spirit of OneNote, with Obsidian-style
 point to. It is written from scratch against the Be/Haiku API, since OneNote's
 own source is closed.
 
+![Folio on VitruvianOS: a project page with wiki links, to-dos and tags, and its backlinks in the side panel](screenshots/vitruvianos-links.png)
+
+![Folio on VitruvianOS: meeting notes, with a search listing every open to-do across notebooks](screenshots/vitruvianos-todos.png)
+
+*Folio 0.1.0 running on VitruvianOS 0.6.2.*
+
 ## Build and run
 
 One source tree builds on both **Haiku** and **VitruvianOS** (V\OS), which
