@@ -1,3 +1,12 @@
+folio (0.1.1-1) unstable; urgency=medium
+
+  * Keep the main window on screen when the display is smaller than the
+    default or saved window size.
+  * Fix `make install` on Haiku and VitruvianOS (wrong finddir constant).
+  * First Haiku package (folio-0.1.1-1-x86_64.hpkg, for R1/beta6).
+
+ -- Folio maintainer <19998719+idumych@users.noreply.github.com>  Sun, 18 Oct 2026 14:15:42 -0700
+
 folio (0.1.0-1) unstable; urgency=medium
 
   * First package, for VitruvianOS 0.6.x (amd64).

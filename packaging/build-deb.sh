@@ -11,7 +11,7 @@ set -eu
 cd "$(dirname "$0")/.."
 ROOT=$(pwd)
 
-VERSION=0.1.0
+VERSION=0.1.1
 REVISION=1
 ARCH=$(dpkg --print-architecture)
 MAINTAINER="${DEBFULLNAME:-Folio maintainer} <${DEBEMAIL:-19998719+idumych@users.noreply.github.com}>"

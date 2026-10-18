@@ -17,18 +17,25 @@ One source tree builds on both **Haiku** and **VitruvianOS** (V\OS), which
 runs Haiku applications recompiled from source on a Linux kernel. The
 Makefile detects which system it is on.
 
-**Haiku** (R1/beta5 or a nightly, with `haiku_devel`):
-
-```sh
-make && ./Folio
-```
-
-**VitruvianOS**: the quickest way is the package. Download
-`folio_0.1.0-1_amd64.deb` from the
+**Haiku** (R1/beta6 or later, x86_64): download
+`folio-0.1.1-1-x86_64.hpkg` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-sudo apt install ./folio_0.1.0-1_amd64.deb
+pkgman install ./folio-0.1.1-1-x86_64.hpkg
+```
+
+This installs Folio in `/boot/system/apps`, adds it to the Deskbar's
+Applications menu, and adds a `folio` command. To build from source
+instead, install `gcc`, `make` and `haiku_devel` with `pkgman`, then run
+`make && ./Folio`. `make hpkg` builds the package.
+
+**VitruvianOS**: the quickest way is the package. Download
+`folio_0.1.1-1_amd64.deb` from the
+[Releases page](https://github.com/idumych/folio/releases), then:
+
+```sh
+sudo apt install ./folio_0.1.1-1_amd64.deb
 ```
 
 This puts Folio in `/system/apps`, adds it to the Deskbar's Applications

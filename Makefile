@@ -15,7 +15,7 @@ VOS_ARCH := $(if $(filter aarch64,$(shell uname -m)),arm64,$(shell uname -m))
 ifeq ($(UNAME),Haiku)
   PLATFORM     := Haiku
   LIBS         := -lbe -ltracker -ltranslation
-  INSTALL_DIR  := $(shell finddir B_USER_NONPACKAGED_APPS_DIRECTORY)
+  INSTALL_DIR  := $(shell finddir B_USER_NONPACKAGED_DIRECTORY)/apps
   # stamps the app signature and file types onto the binary
   RESOURCES     = rc -o obj/Folio.rsrc Folio.rdef && xres -o $@ obj/Folio.rsrc
 else
@@ -25,7 +25,7 @@ else
     PLATFORM    := VitruvianOS
     override CXXFLAGS += $(shell pkg-config --cflags vos) -fPIC
     LIBS        := $(shell pkg-config --libs vos) -ltracker -ltranslation
-    INSTALL_DIR := $(or $(shell finddir B_USER_NONPACKAGED_APPS_DIRECTORY 2>/dev/null),$(HOME)/config/non-packaged/apps)
+    INSTALL_DIR := $(or $(shell finddir B_USER_NONPACKAGED_DIRECTORY 2>/dev/null),$(HOME)/config/non-packaged)/apps
     # V\OS keeps the app signature both as resources and as attributes
     # (absolute paths, as V\OS's own build passes them to xres/resattr)
     RESOURCES    = rc -o $(CURDIR)/obj/Folio.rsrc $(CURDIR)/Folio.rdef \
@@ -46,7 +46,7 @@ else
     override CXXFLAGS += $(addprefix -I$(VOS_HEADERS)/,$(VOS_DIRS)) \
                    -include LinuxBuildCompatibility.h -fPIC
     LIBS        := -lbe -lroot -ltracker -ltranslation
-    INSTALL_DIR := $(or $(shell finddir B_USER_NONPACKAGED_APPS_DIRECTORY 2>/dev/null),$(HOME)/config/non-packaged/apps)
+    INSTALL_DIR := $(or $(shell finddir B_USER_NONPACKAGED_DIRECTORY 2>/dev/null),$(HOME)/config/non-packaged)/apps
     RESOURCES    = rc -o $(CURDIR)/obj/Folio.rsrc $(CURDIR)/Folio.rdef \
                    && xres -o $(CURDIR)/$@ $(CURDIR)/obj/Folio.rsrc \
                    && resattr -O -o $(CURDIR)/$@ $(CURDIR)/obj/Folio.rsrc
@@ -82,6 +82,10 @@ $(NAME): $(OBJS) Folio.rdef
 deb: all
 	sh packaging/build-deb.sh
 
+# Haiku package, built on Haiku R1/beta6+ (see packaging/haiku/build-hpkg.sh)
+hpkg:
+	sh packaging/haiku/build-hpkg.sh
+
 test: tests/test_core.cpp src/LinkGraph.cpp src/MarkdownScan.cpp src/*.h
 	@mkdir -p obj
 	$(CXX) -std=c++17 -Wall -O1 -g tests/test_core.cpp src/LinkGraph.cpp \
@@ -96,4 +100,4 @@ install: all
 clean:
 	rm -rf obj $(NAME)
 
-.PHONY: all check-platform test install clean deb
+.PHONY: all check-platform test install clean deb hpkg

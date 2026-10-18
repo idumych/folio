@@ -86,6 +86,23 @@ private:
 			}
 		}
 
+		// Keep the whole window on screen: the default suits large
+		// displays, and a saved frame may come from a bigger one.
+		BRect screen = BScreen().Frame().InsetByCopy(8, 8);
+		screen.top += 24;	// room for the window tab
+		if (frame.Width() > screen.Width())
+			frame.right = frame.left + screen.Width();
+		if (frame.Height() > screen.Height())
+			frame.bottom = frame.top + screen.Height();
+		if (frame.right > screen.right)
+			frame.OffsetBy(screen.right - frame.right, 0);
+		if (frame.bottom > screen.bottom)
+			frame.OffsetBy(0, screen.bottom - frame.bottom);
+		if (frame.left < screen.left)
+			frame.OffsetBy(screen.left - frame.left, 0);
+		if (frame.top < screen.top)
+			frame.OffsetBy(0, screen.top - frame.top);
+
 		fWindow = new MainWindow(frame, vault.Path(), note.String());
 		if (openPath != NULL && fWindow->Lock()) {
 			fWindow->OpenPath(openPath);

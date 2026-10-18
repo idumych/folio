@@ -1,6 +1,7 @@
 /obj/
 /Folio
 *.deb
+*.hpkg
 /.vos-sdk/
 /.haiku-headers/
 tools/mockups/*.html
