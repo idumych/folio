@@ -147,7 +147,11 @@ github.com/VitruvianOS/Vitruvian.
    once fixed): haydentech/cosmoe#2 (`watch_node()` stub; message layout),
    #3 (underline/strikeout faces), #4 (first-run translators in an
    AppImage, which AppRun works around with `TRANSLATORS`; plus an
-   `AddPaths()` off-by-one inherited from Haiku). Next: try Haiku nightlies and
+   `AddPaths()` off-by-one inherited from Haiku), #5 (zero-length clicks
+   stop all input — why headless tests hold clicks for 150 ms), #6
+   (`entry_ref::name` is a full path — why Vault takes `md::Basename`),
+   #7 (install: hard-coded session dir, host `rm` under DESTDIR, absolute
+   RUNPATH — why build-appimage.sh re-patches RUNPATHs). Next: try Haiku nightlies and
    V\OS 0.7 when it lands (the .deb pins `vos << 0.7~`).
 2. Use the result to fix whatever breaks. Keep logic changes in the portable
    core, with tests.
