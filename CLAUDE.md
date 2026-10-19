@@ -34,6 +34,10 @@ On VitruvianOS itself, `make` / `make deb` work directly: the headers come from
 `/system/develop/headers` (0.6.x), or from `pkg-config vos` on newer builds
 with `vos-dev`.
 
+For building, packaging, releasing or testing on Renku OS, VitruvianOS or
+Linux (Cosmoe), including driving the VirtualBox test VMs, use the
+**folio-platforms** skill (`.claude/skills/folio-platforms/`).
+
 ## Layout
 
 | Path | What |
