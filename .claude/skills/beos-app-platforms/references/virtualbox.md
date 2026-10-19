@@ -2,7 +2,7 @@
 
 Everything here works with the VM running `--type headless`, so the user's desktop isn't disturbed. The user may also open a VM window in the VirtualBox GUI. If a VM suddenly reports "not currently running", check `VBoxManage showvminfo <vm> --machinereadable | grep VMState` and the end of `~/VirtualBox VMs/<vm>/Logs/VBox.log`. "SUSPENDED → POWERING_OFF" with no guest error means it was closed from the host side, probably the user. Ask before restarting it again.
 
-## Existing VMs on this machine (as of Oct 2026)
+## VMs on this machine (as of Oct 2026; used for Folio, reusable for any app)
 
 | VM | Image | Notes |
 |---|---|---|

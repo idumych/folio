@@ -1,8 +1,8 @@
 #!/bin/sh
 # vm.sh STEP...  drive a headless VirtualBox VM.
 #
-#   VM=<name>      which VM (default folio-renku)
-#   SCRATCH=<dir>  where screenshots go (default /tmp/folio-vm)
+#   VM=<name>      which VM (required)
+#   SCRATCH=<dir>  where screenshots go (default /tmp/beos-vm)
 #
 # Steps, run in order:
 #   k:<hex,…>               raw scancodes, e.g. k:1c,9c (Enter), k:1d,13,93,9d (Ctrl+R)
@@ -11,8 +11,8 @@
 #                           altclick move drag
 #   w:<seconds>             wait
 #   shot:<name>             screenshot to $SCRATCH/<name>.png
-VM=${VM:-folio-renku}
-SCRATCH=${SCRATCH:-/tmp/folio-vm}
+VM=${VM:?set VM=<vm name>}
+SCRATCH=${SCRATCH:-/tmp/beos-vm}
 HERE=$(dirname "$0")
 export VM
 mkdir -p "$SCRATCH"

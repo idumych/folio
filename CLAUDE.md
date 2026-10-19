@@ -36,7 +36,8 @@ with `vos-dev`.
 
 For building, packaging, releasing or testing on Renku OS, VitruvianOS or
 Linux (Cosmoe), including driving the VirtualBox test VMs, use the
-**folio-platforms** skill (`.claude/skills/folio-platforms/`).
+**beos-app-platforms** skill (`.claude/skills/beos-app-platforms/`; Folio's
+specifics are in its `references/folio.md`).
 
 ## Layout
 

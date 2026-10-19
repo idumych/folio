@@ -1,7 +1,7 @@
 """mouse.py ACTION X Y [X2 Y2] -- absolute mouse input for a VirtualBox VM.
 
 ACTION: move, click, rclick, dclick, ctrlclick, altclick, drag (X Y -> X2 Y2).
-The VM is taken from $VM (default folio-renku). Coordinates are screenshot
+The VM is taken from $VM (required). Coordinates are screenshot
 pixels (0-based); VirtualBox wants 1-based. Needs the virtualbox-sdk package
 (Python vboxapi) and a VM whose pointing device is a USB tablet.
 """
@@ -20,7 +20,10 @@ x, y = int(sys.argv[2]) + 1, int(sys.argv[3]) + 1
 mgr = VirtualBoxManager(None, None)
 vb = mgr.getVirtualBox()
 session = mgr.getSessionObject(vb)
-vb.findMachine(os.environ.get("VM", "folio-renku")).lockMachine(
+vm = os.environ.get("VM")
+if not vm:
+	sys.exit("mouse.py: set VM=<vm name>")
+vb.findMachine(vm).lockMachine(
 	session, mgr.constants.LockType_Shared)
 mouse = session.console.mouse
 kbd = session.console.keyboard

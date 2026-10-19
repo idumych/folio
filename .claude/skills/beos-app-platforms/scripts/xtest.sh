@@ -1,14 +1,15 @@
 #!/bin/sh
-# xtest.sh STEP...  drive a Cosmoe build of Folio under Xvfb :99 + Openbox.
+# xtest.sh STEP...  drive a Cosmoe app under Xvfb :99 + Openbox.
 #
 # Start the display first (keep both running in the background):
 #   Xvfb :99 -screen 0 1280x800x24 -nolisten tcp &
 #   DISPLAY=:99 openbox &
 #
-#   APP=<cmd>          what to launch (default ./Folio; may be an AppImage)
+#   APP=<cmd>          what to launch (a binary or an AppImage; required)
+#   APP_NAME=<name>    its process name, for pkill (default: basename of APP)
 #   LIBDIR=<dir>       LD_LIBRARY_PATH for a local build (unset for AppImages)
 #   HOME_DIR=<dir>     throwaway home (default $SCRATCH/home)
-#   SCRATCH=<dir>      logs, screenshots, fake xdg-open (default /tmp/folio-xtest)
+#   SCRATCH=<dir>      logs, screenshots, fake xdg-open (default /tmp/beos-xtest)
 #
 # Steps:
 #   start            (re)launch the app; its output goes to $SCRATCH/app.log
@@ -24,9 +25,10 @@
 # The app never sees the user's real session: WAYLAND_DISPLAY is removed,
 # COSMOE_BACKEND=x11, HOME is a throwaway, and xdg-open is replaced by a
 # stub that appends its arguments to $SCRATCH/xdg-open.log.
-SCRATCH=${SCRATCH:-/tmp/folio-xtest}
+SCRATCH=${SCRATCH:-/tmp/beos-xtest}
 HOME_DIR=${HOME_DIR:-$SCRATCH/home}
-APP=${APP:-./Folio}
+APP=${APP:?set APP=<binary or AppImage>}
+APP_NAME=${APP_NAME:-$(basename "$APP" | sed "s/-.*AppImage$//; s/\.AppImage$//")}
 export DISPLAY=:99
 mkdir -p "$SCRATCH/fakebin" "$HOME_DIR"
 
@@ -42,7 +44,7 @@ for step in "$@"; do
 	y=$(echo "$v" | cut -d, -f2)
 	case "$step" in
 	start)
-		pkill -x Folio; sleep 1
+		pkill -x "$APP_NAME"; sleep 1
 		printf '#!/bin/sh\necho "xdg-open $*" >> "%s/xdg-open.log"\n' "$SCRATCH" \
 			> "$SCRATCH/fakebin/xdg-open"
 		chmod +x "$SCRATCH/fakebin/xdg-open"
