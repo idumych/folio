@@ -8,3 +8,4 @@ tools/mockups/*.html
 /dist/
 /.cosmoe/
 *.AppImage
+/.claude/skills/
