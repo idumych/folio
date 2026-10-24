@@ -19,7 +19,10 @@ for i in $(seq 40); do [ -e /tmp/.X11-unix/X77 ] && break; sleep 0.25; done
 [ -e /tmp/.X11-unix/X77 ] || { echo "x11-smoke: Xvfb did not start"; cat "$OUT/xvfb.log"; exit 1; }
 DISPLAY=$DPY openbox > "$OUT/wm.log" 2>&1 &
 WM=$!
-sleep 1
+# Start the app only once Openbox manages the display (it then answers EWMH queries). On a
+# slow runner a window mapped while the WM is still starting can stay unmapped for good.
+for i in $(seq 40); do DISPLAY=$DPY xdotool get_desktop >/dev/null 2>&1 && break; sleep 0.25; done
+DISPLAY=$DPY xdotool get_desktop >/dev/null 2>&1 || { echo "x11-smoke: openbox did not start"; cat "$OUT/wm.log"; exit 1; }
 
 HOME_DIR=$(mktemp -d)
 env -u WAYLAND_DISPLAY DISPLAY=$DPY COSMOE_BACKEND=x11 APPIMAGE_EXTRACT_AND_RUN=1 \
