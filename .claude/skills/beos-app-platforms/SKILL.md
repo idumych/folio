@@ -10,7 +10,7 @@ A BeOS-style app is C++ written against the Be/Haiku API (BApplication, BWindow,
 | Platform | What it is | Package | Built where | Tested how |
 |---|---|---|---|---|
 | **Renku OS** | Fork of Haiku; still names its system package `haiku`, version `r1~beta6` | `.hpkg` (`package create`) | Inside a Haiku-family VM, over SSH | VirtualBox VM: keyboard, mouse, screenshots |
-| **VitruvianOS** (V\OS) | Haiku API on a Linux kernel, Debian userland | `.deb` installing to `/system/apps` | On the Linux host, with a link-time SDK | VirtualBox VM (UEFI) |
+| **VitruvianOS** (V\OS) | Haiku API on a Linux kernel, Debian userland | `.deb` installing to `/system/apps`, **amd64 and arm64** | In CI, natively per architecture, with a link-time SDK | VirtualBox VM (UEFI; amd64 only) |
 | **Linux** | Any desktop, through the Cosmoe library | AppImage | **CI** (Ubuntu 24.04) for releases; locally only for porting | Xvfb + Openbox, driven with xdotool |
 
 Read the reference file for what you're doing:
@@ -28,13 +28,18 @@ Helper scripts in `scripts/` (read each script's header first):
 - `mouse.py`: absolute mouse input through `vboxapi` (needs the `virtualbox-sdk` package)
 - `xtest.sh STEP…`: drive a Cosmoe app under Xvfb (`APP=`, `APP_NAME=`; `start`, held clicks, keys, screenshots)
 - `serve-ssh-setup.sh`: one-time key-only SSH setup for a Haiku-family guest
+- `redactshot.py`: screenshot with private areas (account IDs, keys) blacked out before anything is written to disk
 
 ## Rules that matter
 
-- **Never contact the Haiku project** (no Trac tickets, patches or forum posts), even for bugs that Renku or Cosmoe inherited from Haiku: the user says Haiku doesn't welcome AI contributions. Upstream reports go to **RenkuOS/Source** (AI-assisted work is explicitly allowed; keep write-ups short and plain). File only after reproducing the bug in the platform's own code or bundled apps, not just in your app.
-- **Don't file on haydentech/cosmoe** either: Cosmoe doesn't accept AI contributions. Fix Cosmoe bugs in **Kireji** (idumych/kireji, the user's fork), with a commit and a line in its README's "Changes from Cosmoe".
+- **Never contact the Haiku project** (no Trac tickets, patches or forum posts), even for bugs that Renku or Cosmoe inherited from Haiku: the user says Haiku doesn't welcome AI contributions. Upstream reports go to **RenkuOS/Source** (AI-assisted work is explicitly allowed; keep write-ups short and plain); Cosmoe bugs are fixed in Kireji, never reported to haydentech/cosmoe (see below). File only after reproducing the bug in the platform's own code or bundled apps, not just in your app.
+- **Build release packages in CI, not against the user's local libraries,** unless the user says otherwise (V\OS `.deb`s: vitruvianos.md; AppImages: cosmoe-linux.md).
+- **Target amd64 and arm64 for VitruvianOS** by default: one `deb.yml` job per architecture on `ubuntu-24.04` / `ubuntu-24.04-arm` in `debian:trixie` (haiku-onboard's templates do this). arm64 gets static checks, since VirtualBox can't run arm64 guests on x86.
+- **Linux builds use Kireji**, the user's Cosmoe fork (github.com/idumych/kireji): fix Cosmoe bugs there instead of working around them in apps, and never contribute upstream (cosmoe-linux.md).
+- **Linux means X11 and Wayland:** Cosmoe picks its backend from `WAYLAND_DISPLAY` / `COSMOE_BACKEND`; the AppImage bundles both, and `appimage.yml` smoke-tests it on a headless Weston (cosmoe-linux.md).
 - **Test the exact artifact you publish.** Build every package from one commit. Download the CI AppImage rather than testing a local build. Inside the VMs, install from the release URLs, and compare checksums.
 - **Don't build release AppImages on an Arch/CachyOS host.** CachyOS packages are built for x86-64-v3 (AVX2), and rolling-release glibc is newer than most distros'. An AppImage built there crashes on older CPUs and won't start on Ubuntu 24.04. Build releases in CI on the oldest supported distro.
+- **Never capture or type the user's secrets.** Don't type passwords or account IDs into a VM: run the command and let the user answer the `sudo`/login prompt. If an app shows an account ID or similar, take every screenshot with `redactshot.py` and keep the private part out of the shot (see virtualbox.md).
 - **Report results honestly.** "Type-checked" isn't "ran", and a headless X11 run isn't a Wayland run. Keep the README's platform table and the release notes' "Tested" section in step with what was actually exercised.
 - **Keep platform code contained.** Put the logic you can test anywhere in a portable core with no Haiku headers. Put platform differences in the Makefile's platform branches and behind a define such as `-DAPP_COSMOE`, never scattered through the code.
 
@@ -52,11 +57,11 @@ Keep `CXXFLAGS` additive (`override CXXFLAGS +=`) so packagers can pass hardenin
 ## The release workflow
 
 1. **Bump the version** everywhere it's written: the `.rdef` `app_version`, each packaging script, the Debian changelog, and file names in the README. Then `git grep` for the old version.
-2. **Run checks on the host:** unit tests; a type-check against real Haiku headers; a VitruvianOS SDK link.
-3. **Commit, push, and start the AppImage CI** (`gh workflow run <file>.yml --ref main`). Wait for it with `gh run watch <id> --exit-status` in the background.
-4. **Build the `.deb` and `.hpkg`** from the same commit: `git archive HEAD | ssh <guest> '… make hpkg'`.
-5. **Test every artifact** on its platform, using the checklists in the reference files.
-6. **Publish:** `sha256sum … > SHA256SUMS`; create an annotated tag and push it; `gh release create … --verify-tag`. Make the tag-triggered CI leave an AppImage that's already attached alone, so `SHA256SUMS` stays true.
+2. **Run checks on the host:** unit tests; a type-check against real Haiku headers (current headers: R1/beta6 lacks some, such as `AboutWindow.h`, so CI is the real check).
+3. **Commit, push, and build everything in CI** from that commit: the `.hpkg` (Haiku R1/beta6 VM on a runner), the `.deb` for amd64 and arm64 (`gh workflow run deb.yml --ref main`) and the AppImage, whose job also runs the Wayland smoke test (`gh workflow run appimage.yml --ref main`). Wait with `gh run watch <id> --exit-status` in the background.
+4. **README screenshots** from that release candidate: one per platform, cropped to the window, in `docs/screenshots/`, shown in README.md with captions. Commit them **before** the final build, since the release must be built and tested from one commit; then rebuild.
+5. **Test every artifact** on its platform, using the checklists in the reference files: the amd64 `.deb` in the VM, the arm64 `.deb` statically (no arm64 VirtualBox guests on x86), the AppImage under Xvfb and its Wayland smoke screenshot.
+6. **Publish:** `sha256sum … > SHA256SUMS` (hpkg, both `.deb`s, AppImage); create an annotated tag and push it; `gh release create … --verify-tag`. Make the tag-triggered CI leave artifacts that are already attached alone, so `SHA256SUMS` stays true.
 7. **Re-test from the release:** `curl` the release URLs inside each VM.
 
 ## Platform cheat sheet
