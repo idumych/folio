@@ -1,6 +1,6 @@
 #!/bin/sh
 # build-hpkg.sh — builds <cmd>-<version>-<revision>-<arch>.hpkg on Haiku.
-# Generic haiku-* template: everything app-specific comes from haiku-app.env.
+# Generic beos-app-platforms template: everything app-specific comes from haiku-app.env.
 #
 #   sh packaging/build-hpkg.sh        (from the project root, on Haiku R1/beta6)
 #

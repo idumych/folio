@@ -1,7 +1,7 @@
 #!/bin/sh
 # build-appimage.sh — the app for any x86_64 Linux desktop, as an AppImage,
 # using Hokku (https://github.com/idumych/hokku, a fork of Cosmoe), the Haiku API as a
-# library on X11 and Wayland. Generic haiku-* template: app-specific values
+# library on X11 and Wayland. Generic beos-app-platforms template: app-specific values
 # come from haiku-app.env.
 #
 #   sh packaging/appimage/build-appimage.sh

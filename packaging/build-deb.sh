@@ -1,6 +1,6 @@
 #!/bin/sh
 # build-deb.sh — builds <cmd>_<version>-<revision>_<arch>.deb for VitruvianOS.
-# Generic haiku-* template: everything app-specific comes from haiku-app.env.
+# Generic beos-app-platforms template: everything app-specific comes from haiku-app.env.
 #
 #   . <sdk>/env.sh && sh packaging/build-deb.sh     (from the project root)
 #

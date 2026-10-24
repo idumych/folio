@@ -6,7 +6,7 @@
 #
 # Uses sway on wlroots' headless backend, which always offers a wl_seat like a real desktop
 # (headless Weston has none, and Cosmoe exits without one), and grim for the screenshot.
-# Ubuntu: apt-get install --no-install-recommends sway grim. Generic haiku-* template:
+# Ubuntu: apt-get install --no-install-recommends sway grim. Generic beos-app-platforms template:
 # appimage.yml runs it after building the AppImage.
 set -u
 APP=$(readlink -f "$1")
