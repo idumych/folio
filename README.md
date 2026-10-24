@@ -70,9 +70,9 @@ The unit tests (`make test`) also run in CI on every push.
 
 *VitruvianOS 0.6.2: to-do checkboxes and the Tags tab.*
 
-![Folio on Linux under Wayland, from the AppImage: the Start Here page and its backlinks](docs/screenshots/linux-wayland.png)
+![Folio on Linux under Wayland, from the AppImage: the Start Here page with underlined wiki links, and its backlinks](docs/screenshots/linux-wayland.png)
 
-*Linux, Wayland (headless sway in CI), from the AppImage.*
+*Linux, Wayland (headless sway in CI), from the AppImage: links underlined, as on Haiku.*
 
 ## Build and run
 
