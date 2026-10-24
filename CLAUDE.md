@@ -14,20 +14,22 @@ verified is in **docs/HANDOFF.md**. Read it before larger changes.
 
 ```sh
 make test                              # link-engine unit tests; any OS, no Haiku API
-sh tools/typecheck/haiku-check.sh      # type-check GUI code against real Haiku headers (Linux)
+sh tools/haiku-typecheck.sh            # type-check GUI code against real Haiku headers (Linux)
 make                                   # build ./Folio (on Haiku or VitruvianOS)
 make deb                               # .deb for VitruvianOS (see below)
 make hpkg                              # .hpkg, on Haiku R1/beta6+
-sh packaging/appimage/build-appimage.sh  # Linux AppImage (builds pinned Cosmoe; CI: .github/workflows/appimage.yml)
+sh packaging/appimage/build-appimage.sh  # Linux AppImage (builds Kireji; releases come from CI: appimage.yml)
 python3 tools/mockups/build.py OUTDIR  # regenerate the two mockup PNGs (needs playwright)
 ```
 
-On a plain Linux host (not VitruvianOS) build the link-time SDK once, then
-package:
+Release `.deb`s (amd64 and arm64) are built by `.github/workflows/deb.yml` in
+a Debian trixie container, never on the host (glibc must match V\OS's 2.41).
+On a Debian trixie host or container you can build the link-time SDK and
+package locally:
 
 ```sh
-sh tools/vos-sdk/make-sdk.sh .vos-sdk      # ~4 min; VitruvianOS 0.6.2 libs from source
-. .vos-sdk/sdk/env.sh && make deb          # → folio_0.1.0-1_amd64.deb
+sh tools/vos-sdk/make-sdk.sh .vos-sdk      # VitruvianOS 0.6.2 libs from source
+. .vos-sdk/sdk/env.sh && make deb          # → folio_<version>-1_<arch>.deb
 ```
 
 On VitruvianOS itself, `make` / `make deb` work directly: the headers come from
@@ -50,9 +52,11 @@ are in its `references/folio.md`).
 | `src/NoteView.*` | Editor, a stylable `BTextView`: live Markdown styling, Alt-click links, checkbox toggling, `[[` completion, file drops. |
 | `src/MainWindow.*`, `src/Widgets.*`, `src/App.cpp` | The rest of the UI: tree, title rename, side panel tabs, menus, settings. |
 | `tests/test_core.cpp` | 38 checks over the portable core (renames, folder moves, ambiguity, md links, search). |
-| `packaging/` | `build-deb.sh`, `debian/{postinst,changelog,copyright}`, `haiku/{build-hpkg.sh,PackageInfo.in}`, `appimage/` (build script, AppRun, fonts.conf, desktop file, icon). |
+| `haiku-app.env` | App identity, version and package metadata for the shared haiku-* release templates (`packaging/`, `.github/workflows/`, `tools/`). |
+| `packaging/` | `build-deb.sh`, `build-hpkg.sh`, `description.txt`, `debian/{postinst.in,changelog}`, `appimage/` (build script, AppRun.in, fonts.conf, icon, `wayland-smoke.sh`). The scripts are template copies; change `haiku-app.env`, not them. |
+| `release/test-plan.md` | Folio's feature checks for the release test on each platform. |
 | `tools/vos-sdk/` | `make-sdk.sh` + `vos-0.6.2-linkonly.patch`. |
-| `tools/typecheck/` | `haiku-check.sh`. |
+| `tools/haiku-typecheck.sh` | Type-check against Haiku headers (files from `TYPECHECK_SRCS`). |
 | `tools/mockups/` | Mockup generator (HTML in Haiku style → PNG). |
 
 Storage model: notebooks are top-level folders, sections are sub-folders (any

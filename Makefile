@@ -114,9 +114,9 @@ $(NAME): $(OBJS) $(EXTRA_OBJS) Folio.rdef
 deb: all
 	sh packaging/build-deb.sh
 
-# Haiku package, built on Haiku R1/beta6+ (see packaging/haiku/build-hpkg.sh)
+# Haiku package, built on Haiku R1/beta6+ (see packaging/build-hpkg.sh)
 hpkg:
-	sh packaging/haiku/build-hpkg.sh
+	sh packaging/build-hpkg.sh
 
 test: tests/test_core.cpp src/LinkGraph.cpp src/MarkdownScan.cpp src/*.h
 	@mkdir -p obj

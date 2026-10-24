@@ -9,14 +9,15 @@ One source tree builds for all three, and each gets its own package:
 
 | System | Package | Tested on |
 |---|---|---|
-| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.2-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
-| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.2-1_amd64.deb` | 0.6.2 |
-| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.2-x86_64.AppImage` | CachyOS (X11) |
+| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.3-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
+| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.3-1_amd64.deb` | 0.6.2 |
+| **VitruvianOS** 0.6.x, arm64 | `folio_0.1.3-1_arm64.deb` | not run (built and checked in CI) |
+| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.3-x86_64.AppImage` | CachyOS (X11) |
 
 All three are on the [Releases page](https://github.com/idumych/folio/releases).
-On Linux, Folio runs on [Cosmoe](https://github.com/haydentech/cosmoe), which
-provides the Haiku API as a library on X11 and Wayland, and the AppImage
-bundles it. The Haiku and VitruvianOS packages were installed and tested
+On Linux, Folio runs on [Kireji](https://github.com/idumych/kireji), a fork of
+[Cosmoe](https://github.com/haydentech/cosmoe), which provides the Haiku API
+as a library on X11 and Wayland, and the AppImage bundles it. The Haiku and VitruvianOS packages were installed and tested
 on those systems in VirtualBox; the AppImage was tested on X11. The tests
 covered:
 
@@ -56,11 +57,11 @@ VitruvianOS (V\OS) runs Haiku applications recompiled from source on a
 Linux kernel. The Makefile detects which system it is on.
 
 **Haiku** (R1/beta6 or later, x86_64): download
-`folio-0.1.2-1-x86_64.hpkg` from the
+`folio-0.1.3-1-x86_64.hpkg` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-pkgman install ./folio-0.1.2-1-x86_64.hpkg
+pkgman install ./folio-0.1.3-1-x86_64.hpkg
 ```
 
 This installs Folio in `/boot/system/apps`, adds it to the Deskbar's
@@ -68,32 +69,32 @@ Applications menu, and adds a `folio` command. To build from source
 instead, install `gcc`, `make` and `haiku_devel` with `pkgman`, then run
 `make && ./Folio`. `make hpkg` builds the package.
 
-**Linux** (x86_64): download `Folio-0.1.2-x86_64.AppImage` from the
+**Linux** (x86_64): download `Folio-0.1.3-x86_64.AppImage` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-chmod +x Folio-0.1.2-x86_64.AppImage
-./Folio-0.1.2-x86_64.AppImage
+chmod +x Folio-0.1.3-x86_64.AppImage
+./Folio-0.1.3-x86_64.AppImage
 ```
 
 It needs nothing installed beyond a normal desktop. Cosmoe picks Wayland
 or X11 automatically; set `COSMOE_BACKEND=x11` (or `wayland`) to choose.
-To build it yourself, `sh packaging/appimage/build-appimage.sh` builds the
-pinned Cosmoe release and then the AppImage (see the script for the
+To build it yourself, `sh packaging/appimage/build-appimage.sh` builds
+Kireji and then the AppImage (see the script for the
 packages it needs). With Cosmoe installed, `make` builds `./Folio`
 directly (`COSMOE_ROOT` points at its prefix, default `/usr`).
 
 **VitruvianOS**: the quickest way is the package. Download
-`folio_0.1.2-1_amd64.deb` from the
+`folio_0.1.3-1_amd64.deb` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-sudo apt install ./folio_0.1.2-1_amd64.deb
+sudo apt install ./folio_0.1.3-1_amd64.deb     # or _arm64.deb on ARM
 ```
 
 This puts Folio in `/system/apps`, adds it to the Deskbar's Applications
 menu, and adds a `folio` command. It is built for VitruvianOS 0.6.x on
-amd64 and needs a rebuild for 0.7.
+amd64 and arm64 and needs a rebuild for 0.7.
 
 To build from source on VitruvianOS:
 
@@ -109,7 +110,8 @@ are picked up through `pkg-config vos` instead. The Makefile then links
 signature with `rc`, `xres` and `resattr`; VitruvianOS keeps it both as
 resources and as attributes.
 
-`make deb` (or `sh packaging/build-deb.sh`) builds the package. On
+`make deb` (or `sh packaging/build-deb.sh`) builds the package; release
+packages come from CI (`.github/workflows/deb.yml`, Debian trixie). On
 VitruvianOS the attributes are Linux extended attributes, which dpkg
 doesn't preserve, so the package carries them in
 `/usr/share/folio/apps_attrs.tar`. Its install script copies them onto the
@@ -257,10 +259,11 @@ The first two use only portable C++ and are covered by `tests/test_core.cpp`.
 
 Tools for working on a Linux host:
 
-* `tools/typecheck/haiku-check.sh` type-checks the user-interface code
+* `tools/haiku-typecheck.sh` type-checks the user-interface code
   against Haiku's real headers.
 * `tools/vos-sdk/make-sdk.sh` builds VitruvianOS 0.6.2's libraries from
-  source, so `make deb` works without a VitruvianOS machine.
+  source on Debian trixie (amd64 or arm64), so `make deb` works without a
+  VitruvianOS machine; CI uses it to build the release packages.
 * `tools/mockups/` regenerates the mockup screenshots.
 
 `docs/HANDOFF.md` records the design decisions and what has been verified.
