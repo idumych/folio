@@ -2,7 +2,7 @@
 # wayland-smoke.sh — starts the AppImage on a headless Wayland compositor (Cosmoe's Wayland
 # backend), checks it stays up, and saves a screenshot, the app log and a protocol trace.
 #
-#   sh packaging/appimage/wayland-smoke.sh <App>-<version>-x86_64.AppImage [OUT_DIR]
+#   sh packaging/appimage/wayland-smoke.sh <App>-<version>-<arch>.AppImage [OUT_DIR]
 #
 # Uses sway on wlroots' headless backend, which always offers a wl_seat like a real desktop
 # (headless Weston has none, and Cosmoe exits without one), and grim for the screenshot.

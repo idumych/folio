@@ -1,3 +1,10 @@
+folio (0.1.5-1) unstable; urgency=medium
+
+  * New: Linux AppImage for aarch64 (arm64), built and started on arm64
+    hardware in CI, alongside the x86_64 one.
+
+ -- idumych <19998719+idumych@users.noreply.github.com>  Fri, 23 Oct 2026 21:23:43 -0700
+
 folio (0.1.4-1) unstable; urgency=medium
 
   * Linux: links are underlined and done to-dos struck through, as on

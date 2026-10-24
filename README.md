@@ -9,10 +9,11 @@ One source tree builds for all three, and each gets its own package:
 
 | System | Package | Tested on |
 |---|---|---|
-| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.4-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
-| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.4-1_amd64.deb` | 0.6.2 |
-| **VitruvianOS** 0.6.x, arm64 | `folio_0.1.4-1_arm64.deb` | not run (built and checked in CI) |
-| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.4-x86_64.AppImage` | CachyOS (X11); Wayland smoke test in CI |
+| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.5-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
+| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.5-1_amd64.deb` | 0.6.2 |
+| **VitruvianOS** 0.6.x, arm64 | `folio_0.1.5-1_arm64.deb` | not run (built and checked in CI) |
+| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.5-x86_64.AppImage` | CachyOS (X11); Wayland smoke test in CI |
+| **Linux**, aarch64 (arm64): same distributions | `Folio-0.1.5-aarch64.AppImage` | started under X11 and Wayland on arm64 in CI |
 
 All three are on the [Releases page](https://github.com/idumych/folio/releases).
 On Linux, Folio runs on [Hokku](https://github.com/idumych/hokku), which
@@ -27,8 +28,9 @@ longer freezes the window; a list of image-translator folders in
 drawn. Hokku's README lists every change.
 
 The Haiku and VitruvianOS packages were installed and tested on those systems
-in VirtualBox. The AppImage was tested on X11, and started on Wayland
-(headless sway) in CI. The tests covered:
+in VirtualBox. The x86_64 AppImage was tested on X11, and started on Wayland
+(headless sway) in CI; the aarch64 AppImage was started under X11 and
+Wayland on GitHub's arm64 runners. The tests covered:
 
 * installing the package, the Deskbar entry, and the `folio` command
 * the Welcome notebook created on first launch
@@ -80,11 +82,11 @@ VitruvianOS (V\OS) runs Haiku applications recompiled from source on a
 Linux kernel. The Makefile detects which system it is on.
 
 **Haiku** (R1/beta6 or later, x86_64): download
-`folio-0.1.4-1-x86_64.hpkg` from the
+`folio-0.1.5-1-x86_64.hpkg` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-pkgman install ./folio-0.1.4-1-x86_64.hpkg
+pkgman install ./folio-0.1.5-1-x86_64.hpkg
 ```
 
 This installs Folio in `/boot/system/apps`, adds it to the Deskbar's
@@ -92,12 +94,12 @@ Applications menu, and adds a `folio` command. To build from source
 instead, install `gcc`, `make` and `haiku_devel` with `pkgman`, then run
 `make && ./Folio`. `make hpkg` builds the package.
 
-**Linux** (x86_64): download `Folio-0.1.4-x86_64.AppImage` from the
+**Linux** (x86_64; on ARM use `Folio-0.1.5-aarch64.AppImage`): download `Folio-0.1.5-x86_64.AppImage` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-chmod +x Folio-0.1.4-x86_64.AppImage
-./Folio-0.1.4-x86_64.AppImage
+chmod +x Folio-0.1.5-x86_64.AppImage
+./Folio-0.1.5-x86_64.AppImage
 ```
 
 It needs nothing installed beyond a normal desktop. Hokku picks Wayland
@@ -110,11 +112,11 @@ packages it needs. With Hokku installed, `make` builds `./Folio` directly
 works, without the fixes above.
 
 **VitruvianOS**: the quickest way is the package. Download
-`folio_0.1.4-1_amd64.deb` from the
+`folio_0.1.5-1_amd64.deb` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-sudo apt install ./folio_0.1.4-1_amd64.deb     # or _arm64.deb on ARM
+sudo apt install ./folio_0.1.5-1_amd64.deb     # or _arm64.deb on ARM
 ```
 
 This puts Folio in `/system/apps`, adds it to the Deskbar's Applications
@@ -182,7 +184,7 @@ it at any other folder, including an existing Obsidian vault.
   Cosmoe's paths); notebooks are in `~/Notebooks` as everywhere else. Hokku
   also creates a `~/cosmoe` folder for its own settings.
 * **Looks:** the same as on Haiku: links are underlined and done to-dos
-  struck through. (Before 0.1.4 the Linux build left both out, because
+  struck through. (Before 0.1.5 the Linux build left both out, because
   upstream Cosmoe can't draw them.)
 * **Not yet tested:** an interactive Wayland session (only the CI smoke
   test), and dragging files in from a Linux file manager.

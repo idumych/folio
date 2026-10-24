@@ -53,7 +53,7 @@ are in its `references/folio.md`).
 | `src/MainWindow.*`, `src/Widgets.*`, `src/App.cpp` | The rest of the UI: tree, title rename, side panel tabs, menus, settings. |
 | `tests/test_core.cpp` | 38 checks over the portable core (renames, folder moves, ambiguity, md links, search). |
 | `haiku-app.env` | App identity, version and package metadata for the release pipeline in the beos-app-platforms skill; `packaging/`, `.github/workflows/` and `tools/` are copies of its `templates/`. |
-| `packaging/` | `build-deb.sh`, `build-hpkg.sh`, `description.txt`, `debian/{postinst.in,changelog}`, `appimage/` (build script, AppRun.in, fonts.conf, icon, `wayland-smoke.sh`). The scripts are template copies; change `haiku-app.env`, not them. |
+| `packaging/` | `build-deb.sh`, `build-hpkg.sh`, `description.txt`, `debian/{postinst.in,changelog}`, `appimage/` (build script, AppRun.in, fonts.conf, icon, `x11-smoke.sh`, `wayland-smoke.sh`). The scripts are template copies; change `haiku-app.env`, not them. |
 | `release/test-plan.md` | Folio's feature checks for the release test on each platform. |
 | `tools/vos-sdk/` | `make-sdk.sh` + `vos-0.6.2-linkonly.patch`. |
 | `tools/haiku-typecheck.sh` | Type-check against Haiku headers (files from `TYPECHECK_SRCS`). |
