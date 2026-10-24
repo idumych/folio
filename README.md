@@ -12,14 +12,23 @@ One source tree builds for all three, and each gets its own package:
 | **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.3-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
 | **VitruvianOS** 0.6.x, amd64 | `folio_0.1.3-1_amd64.deb` | 0.6.2 |
 | **VitruvianOS** 0.6.x, arm64 | `folio_0.1.3-1_arm64.deb` | not run (built and checked in CI) |
-| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.3-x86_64.AppImage` | CachyOS (X11) |
+| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.3-x86_64.AppImage` | CachyOS (X11); Wayland smoke test in CI |
 
 All three are on the [Releases page](https://github.com/idumych/folio/releases).
-On Linux, Folio runs on [Hokku](https://github.com/idumych/hokku), a fork of
-[Cosmoe](https://github.com/haydentech/cosmoe), which provides the Haiku API
-as a library on X11 and Wayland, and the AppImage bundles it. The Haiku and VitruvianOS packages were installed and tested
-on those systems in VirtualBox; the AppImage was tested on X11. The tests
-covered:
+On Linux, Folio runs on [Hokku](https://github.com/idumych/hokku), which
+provides the Haiku API as a library on X11 and Wayland; the AppImage bundles
+it, so nothing else needs installing. Hokku is a fork of
+[Cosmoe](https://github.com/haydentech/cosmoe) that carries fixes for apps
+written for Haiku, several of them found while porting Folio: file and folder
+watching (`watch_node()`) works, so renames from other apps are picked up;
+tooltips close when the mouse moves on; a very short click (a touchpad tap) no
+longer freezes the window; a list of image-translator folders in
+`TRANSLATORS` is read correctly; and underlined and struck-through text is
+drawn. Hokku's README lists every change.
+
+The Haiku and VitruvianOS packages were installed and tested on those systems
+in VirtualBox. The AppImage was tested on X11, and started on Wayland
+(headless sway) in CI. The tests covered:
 
 * installing the package, the Deskbar entry, and the `folio` command
 * the Welcome notebook created on first launch
@@ -91,12 +100,14 @@ chmod +x Folio-0.1.3-x86_64.AppImage
 ./Folio-0.1.3-x86_64.AppImage
 ```
 
-It needs nothing installed beyond a normal desktop. Cosmoe picks Wayland
+It needs nothing installed beyond a normal desktop. Hokku picks Wayland
 or X11 automatically; set `COSMOE_BACKEND=x11` (or `wayland`) to choose.
 To build it yourself, `sh packaging/appimage/build-appimage.sh` builds
-Hokku and then the AppImage (see the script for the
-packages it needs). With Cosmoe installed, `make` builds `./Folio`
-directly (`COSMOE_ROOT` points at its prefix, default `/usr`).
+Hokku (the `hokku` branch of github.com/idumych/hokku) and then the
+AppImage; see the script and `.github/workflows/appimage.yml` for the
+packages it needs. With Hokku installed, `make` builds `./Folio` directly
+(`COSMOE_ROOT` points at its prefix, default `/usr`). Upstream Cosmoe also
+works, without the fixes above.
 
 **VitruvianOS**: the quickest way is the package. Download
 `folio_0.1.3-1_amd64.deb` from the
@@ -161,19 +172,20 @@ it at any other folder, including an existing Obsidian vault.
   command key on Haiku. On VitruvianOS's default keymap the command key
   is Ctrl, so Ctrl+R renames, Ctrl+N makes a new page, and so on.
 
-### Differences on Linux (Cosmoe)
+### Differences on Linux (Hokku)
 
 * **Shortcuts** use Ctrl, as on VitruvianOS.
 * **Show in File Manager** (Tracker on the other systems) and links to
   attachments and web pages open with `xdg-open`, so they go to your
   desktop's own apps.
-* **Settings** are in `~/.config/cosmoe/Folio_settings`; notebooks are in
-  `~/Notebooks` as everywhere else. Cosmoe itself creates a `~/cosmoe`
-  folder for its own settings.
-* **Looks:** Cosmoe doesn't draw underlined or struck-through text yet, so
-  links are shown in colour only and done to-dos in grey.
-* **Not yet tested:** the Wayland backend, and dragging files in from a
-  Linux file manager.
+* **Settings** are in `~/.config/cosmoe/Folio_settings` (Hokku keeps
+  Cosmoe's paths); notebooks are in `~/Notebooks` as everywhere else. Hokku
+  also creates a `~/cosmoe` folder for its own settings.
+* **Looks:** links are shown in colour only and done to-dos in grey. Folio
+  still skips underline and strikeout on Linux, a workaround from before
+  Hokku could draw them.
+* **Not yet tested:** an interactive Wayland session (only the CI smoke
+  test), and dragging files in from a Linux file manager.
 
 ## How it is organised
 
