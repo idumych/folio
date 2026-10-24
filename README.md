@@ -9,10 +9,10 @@ One source tree builds for all three, and each gets its own package:
 
 | System | Package | Tested on |
 |---|---|---|
-| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.3-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
-| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.3-1_amd64.deb` | 0.6.2 |
-| **VitruvianOS** 0.6.x, arm64 | `folio_0.1.3-1_arm64.deb` | not run (built and checked in CI) |
-| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.3-x86_64.AppImage` | CachyOS (X11); Wayland smoke test in CI |
+| **Haiku** R1/beta6 or later, x86_64 | `folio-0.1.4-1-x86_64.hpkg` | R1/beta6 (hrev59866) |
+| **VitruvianOS** 0.6.x, amd64 | `folio_0.1.4-1_amd64.deb` | 0.6.2 |
+| **VitruvianOS** 0.6.x, arm64 | `folio_0.1.4-1_arm64.deb` | not run (built and checked in CI) |
+| **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.4-x86_64.AppImage` | CachyOS (X11); Wayland smoke test in CI |
 
 All three are on the [Releases page](https://github.com/idumych/folio/releases).
 On Linux, Folio runs on [Hokku](https://github.com/idumych/hokku), which
@@ -62,15 +62,15 @@ The unit tests (`make test`) also run in CI on every push.
 
 ## Screenshots
 
-![Folio 0.1.3 on Haiku R1/beta6: the Welcome notebook's Start Here page, with wiki links, a red link to a page that doesn't exist yet, and three backlinks](docs/screenshots/haiku-welcome.png)
+![Folio on Haiku R1/beta6: the Welcome notebook's Start Here page, with wiki links, a red link to a page that doesn't exist yet, and three backlinks](docs/screenshots/haiku-welcome.png)
 
 *Haiku R1/beta6: wiki links, a missing page in red, and the backlinks tab.*
 
-![Folio 0.1.3 on VitruvianOS 0.6.2: the To-dos and Tags page, with checkboxes and the Tags tab listing #welcome and #project/folio](docs/screenshots/vitruvianos-tags.png)
+![Folio on VitruvianOS 0.6.2: the To-dos and Tags page, with checkboxes and the Tags tab listing #welcome and #project/folio](docs/screenshots/vitruvianos-tags.png)
 
 *VitruvianOS 0.6.2: to-do checkboxes and the Tags tab.*
 
-![Folio 0.1.3 on Linux under Wayland, from the AppImage: the Start Here page and its backlinks](docs/screenshots/linux-wayland.png)
+![Folio on Linux under Wayland, from the AppImage: the Start Here page and its backlinks](docs/screenshots/linux-wayland.png)
 
 *Linux, Wayland (headless sway in CI), from the AppImage.*
 
@@ -80,11 +80,11 @@ VitruvianOS (V\OS) runs Haiku applications recompiled from source on a
 Linux kernel. The Makefile detects which system it is on.
 
 **Haiku** (R1/beta6 or later, x86_64): download
-`folio-0.1.3-1-x86_64.hpkg` from the
+`folio-0.1.4-1-x86_64.hpkg` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-pkgman install ./folio-0.1.3-1-x86_64.hpkg
+pkgman install ./folio-0.1.4-1-x86_64.hpkg
 ```
 
 This installs Folio in `/boot/system/apps`, adds it to the Deskbar's
@@ -92,12 +92,12 @@ Applications menu, and adds a `folio` command. To build from source
 instead, install `gcc`, `make` and `haiku_devel` with `pkgman`, then run
 `make && ./Folio`. `make hpkg` builds the package.
 
-**Linux** (x86_64): download `Folio-0.1.3-x86_64.AppImage` from the
+**Linux** (x86_64): download `Folio-0.1.4-x86_64.AppImage` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-chmod +x Folio-0.1.3-x86_64.AppImage
-./Folio-0.1.3-x86_64.AppImage
+chmod +x Folio-0.1.4-x86_64.AppImage
+./Folio-0.1.4-x86_64.AppImage
 ```
 
 It needs nothing installed beyond a normal desktop. Hokku picks Wayland
@@ -110,11 +110,11 @@ packages it needs. With Hokku installed, `make` builds `./Folio` directly
 works, without the fixes above.
 
 **VitruvianOS**: the quickest way is the package. Download
-`folio_0.1.3-1_amd64.deb` from the
+`folio_0.1.4-1_amd64.deb` from the
 [Releases page](https://github.com/idumych/folio/releases), then:
 
 ```sh
-sudo apt install ./folio_0.1.3-1_amd64.deb     # or _arm64.deb on ARM
+sudo apt install ./folio_0.1.4-1_amd64.deb     # or _arm64.deb on ARM
 ```
 
 This puts Folio in `/system/apps`, adds it to the Deskbar's Applications
@@ -181,9 +181,9 @@ it at any other folder, including an existing Obsidian vault.
 * **Settings** are in `~/.config/cosmoe/Folio_settings` (Hokku keeps
   Cosmoe's paths); notebooks are in `~/Notebooks` as everywhere else. Hokku
   also creates a `~/cosmoe` folder for its own settings.
-* **Looks:** links are shown in colour only and done to-dos in grey. Folio
-  still skips underline and strikeout on Linux, a workaround from before
-  Hokku could draw them.
+* **Looks:** the same as on Haiku: links are underlined and done to-dos
+  struck through. (Before 0.1.4 the Linux build left both out, because
+  upstream Cosmoe can't draw them.)
 * **Not yet tested:** an interactive Wayland session (only the CI smoke
   test), and dragging files in from a Linux file manager.
 

@@ -84,8 +84,7 @@ The default notebooks folder is `~/Notebooks`. Settings are in
   Don't simplify that away.
 * Cosmoe-specific code is under `#ifdef FOLIO_COSMOE` (set by the Makefile):
   its `watch_node()` is unsupported, so `Vault::_Watch` uses `watch_path()`
-  and re-watches moved folders; files/URLs open via `xdg-open`; it can't draw
-  underline/strikeout faces. Its `entry_ref::name` may be a full path, so
+  and re-watches moved folders; files/URLs open via `xdg-open`. Its `entry_ref::name` may be a full path, so
   take `md::Basename()` of it.
 * On V\OS, attributes are `user.beos.*` xattrs, and **dpkg drops xattrs**. The
   package ships them in `/usr/share/folio/apps_attrs.tar`, and `postinst`

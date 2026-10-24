@@ -147,7 +147,8 @@ github.com/VitruvianOS/Vitruvian.
    status in Hokku (idumych/hokku, the Cosmoe fork): `watch_path()`
    instead of `watch_node()`, and number fields read whatever their type
    (Hokku: `watch_node()` works, Haiku field types); underline and
-   strikeout left out of link and to-do styling (Hokku: drawn);
+   strikeout were left out of link and to-do styling until 0.1.4 (Hokku
+   draws them, so the workaround is gone);
    `TRANSLATORS` set in AppRun because translators didn't load on a first
    AppImage run (Hokku: fixed the `AddPaths()` off-by-one and related
    bugs, but the first-run failure didn't reproduce, so keep it); headless

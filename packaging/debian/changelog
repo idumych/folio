@@ -1,3 +1,11 @@
+folio (0.1.4-1) unstable; urgency=medium
+
+  * Linux: links are underlined and done to-dos struck through, as on
+    Haiku. The workaround that left them out is gone now that Hokku draws
+    both.
+
+ -- idumych <19998719+idumych@users.noreply.github.com>  Fri, 23 Oct 2026 20:24:08 -0700
+
 folio (0.1.3-1) unstable; urgency=medium
 
   * New: VitruvianOS .deb for arm64 as well as amd64, both built in CI on
