@@ -68,7 +68,7 @@ jobs:
       - name: Smoke-test tools
         run: |
           sudo DEBIAN_FRONTEND=noninteractive timeout 300 apt-get install -y --no-install-recommends \
-            sway grim xvfb openbox imagemagick
+            sway grim xvfb openbox imagemagick xdotool
 
       - name: X11 smoke test (Xvfb)
         timeout-minutes: 5

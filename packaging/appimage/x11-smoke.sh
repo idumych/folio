@@ -6,7 +6,7 @@
 #
 # Uses Xvfb with Openbox (without a window manager Cosmoe windows get no focus) and
 # ImageMagick's import for the screenshot. Ubuntu: apt-get install --no-install-recommends
-# xvfb openbox imagemagick. Generic beos-app-platforms template: appimage.yml runs it after
+# xvfb openbox imagemagick xdotool. Generic beos-app-platforms template: appimage.yml runs it after
 # building the AppImage, on every architecture, so the aarch64 build is started on real
 # arm64 hardware too.
 set -u
@@ -25,7 +25,19 @@ HOME_DIR=$(mktemp -d)
 env -u WAYLAND_DISPLAY DISPLAY=$DPY COSMOE_BACKEND=x11 APPIMAGE_EXTRACT_AND_RUN=1 \
 	HOME="$HOME_DIR" "$APP" > "$OUT/app.log" 2>&1 &
 PID=$!
-sleep 15
+# Wait for the app's top-level window (up to 60 s; first runs build font caches).
+APPNAME=$(basename "$APP" | sed 's/-[0-9].*//')
+for i in $(seq 60); do
+	DISPLAY=$DPY xdotool search --onlyvisible --name "^$APPNAME" >/dev/null 2>&1 && break
+	kill -0 $PID 2>/dev/null || break
+	sleep 1
+done
+sleep 3
+# Every named window, and which are mapped (visible), for the record
+{ echo "visible:"; for w in $(DISPLAY=$DPY xdotool search --onlyvisible --name . 2>/dev/null); do
+	echo "  $w $(DISPLAY=$DPY xdotool getwindowname $w 2>/dev/null) $(DISPLAY=$DPY xdotool getwindowgeometry $w 2>/dev/null | tr '\n' ' ')"; done
+  echo "all named:"; for w in $(DISPLAY=$DPY xdotool search --name . 2>/dev/null); do
+	echo "  $w $(DISPLAY=$DPY xdotool getwindowname $w 2>/dev/null)"; done; } > "$OUT/window-tree.txt" 2>&1
 if ! kill -0 $PID 2>/dev/null; then
 	wait $PID; status=$?
 	echo "x11-smoke: the app exited with status $status"; cat "$OUT/app.log"
@@ -33,8 +45,19 @@ if ! kill -0 $PID 2>/dev/null; then
 fi
 echo "x11-smoke: the app is running under X11 ($(uname -m))"
 DISPLAY=$DPY timeout 30 import -window root "$OUT/x11-screenshot.png" || echo "x11-smoke: screenshot failed"
-kill $PID 2>/dev/null; sleep 1; kill $WM $XPID 2>/dev/null
+# Stop the app before the X server, so its log doesn't end with "X connection broken".
+# $PID is the AppImage runtime; the app itself is its child, so stop that by name too.
+kill $PID 2>/dev/null; pkill -TERM -x "$APPNAME" 2>/dev/null
+for i in $(seq 20); do pgrep -x "$APPNAME" >/dev/null || break; sleep 0.25; done
+pkill -KILL -x "$APPNAME" 2>/dev/null; kill $WM $XPID 2>/dev/null
 ls -l "$OUT"
+if ! sed -n '/^visible:/,/^all named:/p' "$OUT/window-tree.txt" | grep -q " $APPNAME"; then
+	echo "x11-smoke: no visible window named $APPNAME* appeared:"; cat "$OUT/window-tree.txt"; exit 1
+fi
+COLORS=$(identify -format %k "$OUT/x11-screenshot.png" 2>/dev/null || echo 0)
+if [ "${COLORS:-0}" -le 1 ]; then
+	echo "x11-smoke: the screenshot is blank ($COLORS colour): the window drew nothing"; exit 1
+fi
 if grep -qiE 'error|assert|crash|segment|abort|exception' "$OUT/app.log"; then
 	echo "x11-smoke: problems in the app log:"; grep -iE 'error|assert|crash|segment|abort|exception' "$OUT/app.log"
 	exit 1
