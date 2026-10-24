@@ -58,7 +58,7 @@ actually been verified, and what is still open.
 Sources: v-os.dev FAQ and blog, the Linuxiac 0.3 article, and the source at
 github.com/VitruvianOS/Vitruvian.
 
-* V\OS runs Haiku apps through **source compatibility**, not binary: apps are
+* V\OS is a BeOS-like OS based on Linux. It runs Haiku apps through **source compatibility**, not binary: apps are
   recompiled. It is Debian **trixie**-based (glibc 2.41, ICU 76) and uses ext4
   with xattrs. Releases are tagged up to **0.6.2**; main reports 0.6.3.
 * **No indexing or live queries yet.** They are on the roadmap. Folio's

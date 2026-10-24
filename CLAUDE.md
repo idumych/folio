@@ -1,7 +1,7 @@
 # Folio — notes for Claude Code
 
-Folio is a native notebook app for **Haiku**, **VitruvianOS** (V\OS: the
-Haiku API on a Linux kernel) and plain **Linux** via Cosmoe (the Haiku API
+Folio is a native notebook app for **Haiku**, **VitruvianOS** (V\OS, a
+BeOS-like OS based on Linux) and plain **Linux** via Cosmoe (the Haiku API
 as a library on X11/Wayland), modelled on OneNote, with Obsidian-style
 `[[wiki links]]` that are rewritten when the page they point to is renamed or
 moved. It is written from scratch in C++17 against the Be/Haiku API. OneNote

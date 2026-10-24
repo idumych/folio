@@ -20,7 +20,7 @@ ifeq ($(UNAME),Haiku)
   # stamps the app signature and file types onto the binary
   RESOURCES     = rc -o obj/Folio.rsrc Folio.rdef && xres -o $@ obj/Folio.rsrc
 else
-  # VitruvianOS: the Haiku API on a Linux kernel. Headers and flags come
+  # VitruvianOS: a BeOS-like OS based on Linux. Headers and flags come
   # from the vos-dev package through pkg-config.
   ifeq ($(shell pkg-config --exists vos && echo yes),yes)
     PLATFORM    := VitruvianOS

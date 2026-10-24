@@ -1,7 +1,7 @@
 # Folio
 
-A native notebook app for **Haiku**, **VitruvianOS** and **Linux**, in the
-spirit of OneNote, with Obsidian-style `[[wiki links]]` that rewrite themselves when you
+A native notebook app for **Haiku**, **VitruvianOS** (a BeOS-like OS based on
+Linux) and **Linux**, in the spirit of OneNote, with Obsidian-style `[[wiki links]]` that rewrite themselves when you
 rename or move the page they point to. It is written from scratch against the
 Be/Haiku API, since OneNote's own source is closed.
 
@@ -78,8 +78,8 @@ The unit tests (`make test`) also run in CI on every push.
 
 ## Build and run
 
-VitruvianOS (V\OS) runs Haiku applications recompiled from source on a
-Linux kernel. The Makefile detects which system it is on.
+VitruvianOS (V\OS) is a BeOS-like OS based on Linux; it runs Haiku
+applications recompiled from source. The Makefile detects which system it is on.
 
 **Haiku** (R1/beta6 or later, x86_64): download
 `folio-0.1.5-1-x86_64.hpkg` from the
