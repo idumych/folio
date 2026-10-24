@@ -51,6 +51,20 @@ The unit tests (`make test`) also run in CI on every push.
 
 *Folio on Linux (X11), from the AppImage.*
 
+## Screenshots
+
+![Folio 0.1.3 on Haiku R1/beta6: the Welcome notebook's Start Here page, with wiki links, a red link to a page that doesn't exist yet, and three backlinks](docs/screenshots/haiku-welcome.png)
+
+*Haiku R1/beta6: wiki links, a missing page in red, and the backlinks tab.*
+
+![Folio 0.1.3 on VitruvianOS 0.6.2: the To-dos and Tags page, with checkboxes and the Tags tab listing #welcome and #project/folio](docs/screenshots/vitruvianos-tags.png)
+
+*VitruvianOS 0.6.2: to-do checkboxes and the Tags tab.*
+
+![Folio 0.1.3 on Linux under Wayland, from the AppImage: the Start Here page and its backlinks](docs/screenshots/linux-wayland.png)
+
+*Linux, Wayland (headless sway in CI), from the AppImage.*
+
 ## Build and run
 
 VitruvianOS (V\OS) runs Haiku applications recompiled from source on a
