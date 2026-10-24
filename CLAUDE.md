@@ -98,10 +98,12 @@ The default notebooks folder is `~/Notebooks`. Settings are in
 
 ## Status
 
-v0.1.3 is published at github.com/idumych/folio with .debs for
+v0.1.5 is published at github.com/idumych/folio with .debs for
 VitruvianOS 0.6.x (amd64 and arm64, built in CI on Debian trixie), an .hpkg
-for Haiku R1/beta6 (built in the Haiku VM), and a Linux AppImage built with
-Hokku on Ubuntu 24.04 in CI. All came through the release gate: Haiku and
-V\OS amd64 tested in VirtualBox, Linux under Xvfb + Openbox (X11) plus a CI
-Wayland smoke test; the arm64 .deb was checked statically only.
+for Haiku R1/beta6 (x86_64, built in the Haiku VM; Haiku has no arm64 target
+yet), and Linux AppImages for x86_64 and aarch64 built with Hokku on Ubuntu
+24.04 in CI. All came through the release gate: Haiku and V\OS amd64 tested
+in VirtualBox, Linux x86_64 under Xvfb + Openbox; both AppImages started under
+X11 and Wayland in CI (aarch64 on GitHub's arm64 runners); the arm64 .deb was
+checked statically only.
 See docs/HANDOFF.md §5 for what was verified and §7 for the next steps.
