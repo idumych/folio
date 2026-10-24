@@ -144,18 +144,18 @@ github.com/VitruvianOS/Vitruvian.
 
 1. All three targets are exercised (see §5). For Linux, try the Wayland
    backend and XDND file drops. Cosmoe workarounds in Folio, and their
-   status in Kireji (idumych/kireji, the Cosmoe fork): `watch_path()`
+   status in Hokku (idumych/hokku, the Cosmoe fork): `watch_path()`
    instead of `watch_node()`, and number fields read whatever their type
-   (Kireji: `watch_node()` works, Haiku field types); underline and
-   strikeout left out of link and to-do styling (Kireji: drawn);
+   (Hokku: `watch_node()` works, Haiku field types); underline and
+   strikeout left out of link and to-do styling (Hokku: drawn);
    `TRANSLATORS` set in AppRun because translators didn't load on a first
-   AppImage run (Kireji: fixed the `AddPaths()` off-by-one and related
+   AppImage run (Hokku: fixed the `AddPaths()` off-by-one and related
    bugs, but the first-run failure didn't reproduce, so keep it); headless
    tests hold clicks for 150 ms because zero-length clicks froze windows
-   (Kireji: fixed); Vault takes `md::Basename` because `entry_ref::name`
-   is a full path (unchanged in Kireji, by design); build-appimage.sh
+   (Hokku: fixed); Vault takes `md::Basename` because `entry_ref::name`
+   is a full path (unchanged in Hokku, by design); build-appimage.sh
    re-patches RUNPATHs (Cosmoe no longer sets an absolute RUNPATH on
-   Linux). Drop each workaround once Folio builds against a Kireji release
+   Linux). Drop each workaround once Folio builds against a Hokku release
    that has the fix. Next: try Haiku nightlies and V\OS 0.7 when it lands
    (the .deb pins `vos << 0.7~`).
 2. Use the result to fix whatever breaks. Keep logic changes in the portable

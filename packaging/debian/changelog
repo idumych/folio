@@ -2,7 +2,7 @@ folio (0.1.3-1) unstable; urgency=medium
 
   * New: VitruvianOS .deb for arm64 as well as amd64, both built in CI on
     Debian trixie.
-  * The Linux AppImage is built with Kireji (a Cosmoe fork with fixes for
+  * The Linux AppImage is built with Hokku (a Cosmoe fork with fixes for
     pointer events, tooltips and font styles) and is smoke-tested on
     Wayland as well as X11.
   * Packaging moved to the shared haiku-* release templates; package

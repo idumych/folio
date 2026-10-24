@@ -15,7 +15,7 @@ One source tree builds for all three, and each gets its own package:
 | **Linux**, x86_64: Ubuntu 24.04, Fedora 39, Debian 13 or newer | `Folio-0.1.3-x86_64.AppImage` | CachyOS (X11) |
 
 All three are on the [Releases page](https://github.com/idumych/folio/releases).
-On Linux, Folio runs on [Kireji](https://github.com/idumych/kireji), a fork of
+On Linux, Folio runs on [Hokku](https://github.com/idumych/hokku), a fork of
 [Cosmoe](https://github.com/haydentech/cosmoe), which provides the Haiku API
 as a library on X11 and Wayland, and the AppImage bundles it. The Haiku and VitruvianOS packages were installed and tested
 on those systems in VirtualBox; the AppImage was tested on X11. The tests
@@ -94,7 +94,7 @@ chmod +x Folio-0.1.3-x86_64.AppImage
 It needs nothing installed beyond a normal desktop. Cosmoe picks Wayland
 or X11 automatically; set `COSMOE_BACKEND=x11` (or `wayland`) to choose.
 To build it yourself, `sh packaging/appimage/build-appimage.sh` builds
-Kireji and then the AppImage (see the script for the
+Hokku and then the AppImage (see the script for the
 packages it needs). With Cosmoe installed, `make` builds `./Folio`
 directly (`COSMOE_ROOT` points at its prefix, default `/usr`).
 

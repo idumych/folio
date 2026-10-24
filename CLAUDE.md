@@ -18,7 +18,7 @@ sh tools/haiku-typecheck.sh            # type-check GUI code against real Haiku 
 make                                   # build ./Folio (on Haiku or VitruvianOS)
 make deb                               # .deb for VitruvianOS (see below)
 make hpkg                              # .hpkg, on Haiku R1/beta6+
-sh packaging/appimage/build-appimage.sh  # Linux AppImage (builds Kireji; releases come from CI: appimage.yml)
+sh packaging/appimage/build-appimage.sh  # Linux AppImage (builds Hokku; releases come from CI: appimage.yml)
 python3 tools/mockups/build.py OUTDIR  # regenerate the two mockup PNGs (needs playwright)
 ```
 
