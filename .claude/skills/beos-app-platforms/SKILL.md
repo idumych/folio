@@ -31,7 +31,8 @@ Helper scripts in `scripts/` (read each script's header first):
 
 ## Rules that matter
 
-- **Never contact the Haiku project** (no Trac tickets, patches or forum posts), even for bugs that Renku or Cosmoe inherited from Haiku: the user says Haiku doesn't welcome AI contributions. Upstream reports go to **RenkuOS/Source** (AI-assisted work is explicitly allowed; keep write-ups short and plain) and **haydentech/cosmoe**. File only after reproducing the bug in the platform's own code or bundled apps, not just in your app.
+- **Never contact the Haiku project** (no Trac tickets, patches or forum posts), even for bugs that Renku or Cosmoe inherited from Haiku: the user says Haiku doesn't welcome AI contributions. Upstream reports go to **RenkuOS/Source** (AI-assisted work is explicitly allowed; keep write-ups short and plain). File only after reproducing the bug in the platform's own code or bundled apps, not just in your app.
+- **Don't file on haydentech/cosmoe** either: Cosmoe doesn't accept AI contributions. Fix Cosmoe bugs in **Kireji** (idumych/kireji, the user's fork), with a commit and a line in its README's "Changes from Cosmoe".
 - **Test the exact artifact you publish.** Build every package from one commit. Download the CI AppImage rather than testing a local build. Inside the VMs, install from the release URLs, and compare checksums.
 - **Don't build release AppImages on an Arch/CachyOS host.** CachyOS packages are built for x86-64-v3 (AVX2), and rolling-release glibc is newer than most distros'. An AppImage built there crashes on older CPUs and won't start on Ubuntu 24.04. Build releases in CI on the oldest supported distro.
 - **Report results honestly.** "Type-checked" isn't "ran", and a headless X11 run isn't a Wayland run. Keep the README's platform table and the release notes' "Tested" section in step with what was actually exercised.
